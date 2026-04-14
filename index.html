@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tanaka Alex Mbendana — Research Roadmap</title>
+  <meta name="description" content="MSc Research Journey — Solar Induced Fluorescence & Cyclone Vegetation Response, Beihang University 2025–2027" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ── Three.js particles (behind globe, very subtle) ── -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ── Globe — fixed full-screen background ── -->
+  <div id="globe-bg">
+    <div id="globe-container"></div>
+    <div id="satellite-container"></div>
+  </div>
+
+  <!-- ── Dark tint overlay — keeps content readable over globe ── -->
+  <div id="globe-overlay"></div>
+
+  <!-- ── Auto-play UI (fixed, above everything) ── -->
+  <div id="autoplay-progress-bar">
+    <div id="autoplay-progress-fill"></div>
+  </div>
+  <button id="autoplay-stop-btn" class="autoplay-stop" aria-label="Stop auto-play">
+    ✕ Stop
+  </button>
+
+  <!-- ════════════════════════════════════════════
+       JOURNEY PLAYER (fullscreen overlay)
+  ════════════════════════════════════════════ -->
+  <div id="journey-player" role="dialog" aria-modal="true" aria-label="Journey Player">
+    <div class="player-bg"></div>
+    <canvas class="player-canvas"></canvas>
+
+    <div class="player-ui">
+
+      <!-- Top: Progress bar + dots -->
+      <div class="player-progress-bar">
+        <div class="progress-track">
+          <div class="progress-fill" style="width:10%"></div>
+        </div>
+        <div class="progress-dots"></div>
+      </div>
+
+      <!-- Left panel -->
+      <div class="player-side-left">
+        <div class="scene-number">01 / 10</div>
+        <div class="scene-milestone">MSc Programme begins</div>
+        <div class="scene-context">
+          Use arrow keys or buttons to navigate.<br>
+          Press Space to auto-play the full journey.
+        </div>
+      </div>
+
+      <!-- Centre: Title -->
+      <div class="player-center">
+        <div class="scene-title scene-fade">Arrival</div>
+        <div class="scene-subtitle">September 2025 — Beihang University</div>
+      </div>
+
+      <!-- Right panel: Story text -->
+      <div class="player-side-right">
+        <div class="story-text"></div>
+      </div>
+
+      <!-- Bottom controls -->
+      <div class="player-controls">
+        <button class="ctrl-btn ctrl-btn-close" id="ctrl-close" aria-label="Close player">
+          ✕ Close
+        </button>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="ctrl-btn" id="ctrl-prev" disabled>← Previous</button>
+          <button class="ctrl-btn" id="ctrl-playpause">▶ Play</button>
+          <button class="ctrl-btn" id="ctrl-next">Next →</button>
+        </div>
+        <div style="font-size:0.75rem;color:#64748B">
+          ← → keys · Space to auto-play
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       1. HERO
+  ════════════════════════════════════════════ -->
+  <section id="hero" data-globe="hero">
+    <div class="hero-badge">
+      <span>◆</span>
+      MSc Research Roadmap · Beihang University · 2025–2027
+    </div>
+
+    <h1 class="hero-name">
+      Tanaka<br><span>Alex Mbendana</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Solar Induced Fluorescence as a Diagnostic of Tropical Cyclone
+      Impacts on Vegetation in Southern Africa
+    </p>
+
+    <div class="hero-meta">
+      <span>🇿🇼 Zimbabwe</span>
+      <span>🛰 Remote Sensing & GIS</span>
+      <span>📍 Beijing, China</span>
+      <span>📅 2025 – 2027</span>
+    </div>
+
+    <button class="btn-play" id="btn-play-journey">
+      <div class="play-icon">▶</div>
+      Play My Journey
+    </button>
+
+    <div style="margin-top:1.5rem">
+      <button id="btn-skip-to-map" style="background:none;border:none;color:#64748B;font-size:0.82rem;cursor:pointer;text-decoration:underline">
+        or explore the map below
+      </button>
+    </div>
+
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       2. JOURNEY MAP
+  ════════════════════════════════════════════ -->
+  <section id="journey-map" data-globe="journey">
+
+    <!-- Intro header — scrolls away normally -->
+    <div class="journey-intro">
+      <div class="section-label">Geographic Journey</div>
+      <h2 class="section-title">From Hangzhou to Home</h2>
+      <p class="section-desc">
+        Five stops across two continents. Scroll through this section —
+        the globe behind you flies the route, diving from space to street level at each location.
+      </p>
+    </div>
+
+    <!-- Tall scroll container — globe background animates as you pass through -->
+    <div class="journey-scroll-container">
+      <div class="journey-sticky">
+
+        <!-- Story panel — updates on scroll -->
+        <div class="globe-story-panel" id="globe-story-panel">
+          <div class="globe-stop-counter" id="globe-stop-counter">Scroll to begin</div>
+          <div class="globe-stop-location" id="globe-stop-location">From Hangzhou<br>to Home</div>
+          <div class="globe-stop-coords" id="globe-stop-coords">30.274°N · 120.155°E</div>
+          <div class="globe-stop-text" id="globe-stop-text">
+            <p>Scroll down. The globe follows.</p>
+          </div>
+        </div>
+
+        <!-- Zoom badge — bottom right -->
+        <div class="globe-zoom-badge" id="globe-zoom-badge">Global View</div>
+
+        <!-- Stop progress dots — bottom centre -->
+        <div class="globe-stop-dots-bar">
+          <div class="globe-stop-dots" id="globe-stop-dots"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       3. PROFILE + RESEARCH OVERVIEW
+  ════════════════════════════════════════════ -->
+  <section id="profile" data-globe="southern-africa">
+    <div class="section-label">The Researcher</div>
+    <h2 class="section-title">Profile & Research</h2>
+
+    <div class="profile-grid">
+
+      <!-- Left: Profile card -->
+      <div class="profile-card reveal">
+        <div class="profile-photo-area">
+          <!-- Photo injected if found; initials fallback -->
+          <div class="profile-photo-placeholder">
+            <div class="initials">TAM</div>
+            <span>Tanaka Alex Mbendana</span>
+          </div>
+          <div class="profile-photo-glow"></div>
+        </div>
+        <div class="profile-info">
+          <div class="profile-name">Tanaka Alex Mbendana</div>
+          <div class="profile-title">MSc Remote Sensing & GIS</div>
+          <div class="profile-uni">Beihang University, Beijing · 2025 – 2027</div>
+          <div class="profile-tags">
+            <span class="tag">SIF</span>
+            <span class="tag">Tropical Cyclones</span>
+            <span class="tag">Southern Africa</span>
+            <span class="tag">TROPOMI</span>
+            <span class="tag">Vegetation Remote Sensing</span>
+            <span class="tag">Zimbabwe</span>
+          </div>
+
+          <!-- Publication -->
+          <div id="pub-card" class="pub-card">
+            <!-- injected by main.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Research content -->
+      <div class="profile-content">
+
+        <!-- Research overview -->
+        <div class="research-overview reveal">
+          <div class="section-label" style="margin-bottom:0.75rem">Current Research</div>
+          <div class="research-title-display">
+            Solar Induced Fluorescence as a Diagnostic of Tropical Cyclone
+            Impacts on Vegetation in Southern Africa
+          </div>
+          <p class="research-abstract" id="research-abstract-text"></p>
+          <div class="data-chips" id="data-chips"></div>
+        </div>
+
+        <!-- Key findings -->
+        <div class="reveal">
+          <h3 class="profile-section-title">Key Findings</h3>
+          <div class="findings-list" id="key-findings-list"></div>
+        </div>
+
+        <!-- AI tools -->
+        <div class="reveal">
+          <h3 class="profile-section-title">Powered By</h3>
+          <p style="font-size:0.85rem;color:#64748B;margin-bottom:1.5rem">
+            This research was conducted in partnership with two AI tools, each serving
+            a distinct and complementary role in the workflow.
+          </p>
+          <div class="ai-tools-grid" id="ai-tools-grid"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       4. THE STRUGGLE — 28 WEAKNESSES
+  ════════════════════════════════════════════ -->
+  <section id="weaknesses" data-globe="zimbabwe">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-label">Honest Self-Assessment</div>
+      <h2 class="section-title">The Struggle</h2>
+      <p class="section-desc">
+        Identified by ChatGPT during a structured self-assessment. 28 weaknesses across 6
+        categories — documented not as failures, but as the map of what needs to change.
+        Click any item to expand.
+      </p>
+
+      <!-- Meta weakness -->
+      <div class="meta-weakness-banner reveal">
+        <h3>The Meta-Weakness That Drives Everything</h3>
+        <p style="font-size:1rem;color:#C4B5FD;margin-bottom:0.75rem">
+          Optimizing for being <em>right</em> instead of being <em>attack-resistant.</em>
+        </p>
+        <blockquote>
+          "Can this survive criticism?" — not just "Is this good enough?"
+        </blockquote>
+      </div>
+
+      <!-- Category cards -->
+      <div class="weakness-categories" id="weakness-categories">
+        <!-- injected by main.js -->
+      </div>
+
+      <!-- 5 non-negotiables -->
+      <div class="five-rules reveal">
+        <h3>5 Non-Negotiables Going Forward</h3>
+        <div class="rule-list" id="five-rules-list">
+          <!-- injected by main.js -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       5. COURSES
+  ════════════════════════════════════════════ -->
+  <section id="courses" data-globe="hangzhou" style="padding:8rem 2rem;max-width:1200px;margin:0 auto">
+    <div class="section-label">Academic Programme</div>
+    <h2 class="section-title">The Courses</h2>
+    <p class="section-desc">
+      Credits are requirements. But each course contributed something specific to the
+      research. Here is the connection.
+    </p>
+
+    <div class="courses-grid">
+      <div class="courses-semester reveal">
+        <div class="courses-sem-label">Semester 1 · September 2025</div>
+        <div id="sem1-courses"></div>
+      </div>
+      <div class="courses-semester reveal">
+        <div class="courses-sem-label">Semester 2 · February 2026</div>
+        <div id="sem2-courses"></div>
+      </div>
+    </div>
+
+    <!-- Scientific writing note -->
+    <div style="border:1px solid rgba(245,158,11,0.25);border-radius:16px;padding:2rem;background:rgba(245,158,11,0.04)" class="reveal">
+      <div style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent-gold);margin-bottom:0.75rem">
+        Scientific Writing · Key Course
+      </div>
+      <h3 style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:300;margin-bottom:1rem">
+        The course that named the problem I already had
+      </h3>
+      <p style="font-size:0.9rem;line-height:1.8;color:rgba(248,250,252,0.8);margin-bottom:1rem">
+        Seven lectures on how to write the paper I was already struggling to write.
+        Structure of a scientific paper. Journal selection and impact metrics. Writing
+        strategies for complex results. PRISMA guidelines. Springer submission process.
+        Harvard and IEEE citation standards.
+      </p>
+      <p style="font-size:0.9rem;line-height:1.8;color:rgba(248,250,252,0.8)">
+        The irony: learning the formal rules of scientific writing made the perfectionism worse
+        before it made it better. Knowing exactly what a good paper looks like raises the
+        internal bar. The cure is the same as the diagnosis — expose the work earlier, let it
+        be critiqued, iterate with external feedback rather than internal polish.
+      </p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       6. RESEARCH ROADMAP TIMELINE
+  ════════════════════════════════════════════ -->
+  <section id="roadmap" data-globe="world">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-label">Research Roadmap</div>
+      <h2 class="section-title">Past, Present & Future</h2>
+      <p class="section-desc">
+        A full timeline of the MSc programme — from arrival to submission, and beyond.
+        Past milestones and upcoming targets.
+      </p>
+
+      <!-- Submission target banner -->
+      <div style="border:1px solid rgba(240,171,252,0.3);border-radius:16px;padding:1.5rem 2rem;background:rgba(240,171,252,0.04);margin-bottom:4rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap" class="reveal">
+        <div>
+          <div style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#F0ABFC;margin-bottom:0.25rem">Primary Target</div>
+          <div style="font-size:1.3rem;font-weight:600">July 2026 — Journal Submission</div>
+          <div style="font-size:0.85rem;color:#94A3B8;margin-top:0.25rem">International Journal of Applied Earth Observation and Geoinformation</div>
+        </div>
+        <div style="border-left:1px solid rgba(255,255,255,0.1);padding-left:2rem">
+          <div style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#F0ABFC;margin-bottom:0.25rem">Next Manuscript</div>
+          <div style="font-size:1.1rem;font-weight:500">SIF Recovery Trajectories — Final Year</div>
+          <div style="font-size:0.85rem;color:#94A3B8;margin-top:0.25rem">Sentinel-1 SAR + SIF integration · SWIO basin 2000–2024</div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="roadmap-timeline" id="roadmap-timeline">
+        <!-- injected by main.js -->
+      </div>
+
+      <!-- Novelty statement -->
+      <div style="margin-top:4rem;border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:2rem;background:rgba(34,197,94,0.04)" class="reveal">
+        <div style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:#22C55E;margin-bottom:0.75rem">Research Novelty</div>
+        <p style="font-size:1.05rem;line-height:1.7;color:rgba(248,250,252,0.9)">
+          This is the first study to systematically evaluate SIF spatial aggregation scale
+          as a variable in cyclone damage attribution across Southern African ecoregions.
+          The core contribution is not a new index, but a disciplined investigation of
+          <em>where</em> the signal lives — and how scale choices change what you see.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════ -->
+  <footer>
+    <p style="margin-bottom:0.5rem">
+      <strong>Tanaka Alex Mbendana</strong> · MSc Remote Sensing & GIS ·
+      Beihang University, Beijing · 2025 – 2027
+    </p>
+    <p style="margin-bottom:0.5rem">
+      Research: Solar Induced Fluorescence & Cyclone Vegetation Response · Southern Africa
+    </p>
+    <p style="margin-bottom:1rem">
+      Powered by <strong>Claude Code</strong> (manuscript, code, figures) ·
+      <strong>ChatGPT</strong> (conceptual ideation, writing feedback)
+    </p>
+    <p>
+      Built with Three.js · GSAP · Vanilla JS · No framework required
+    </p>
+  </footer>
+
+  <!-- ── Leaflet (satellite overlay) ── -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- ── Globe.gl (UMD — must load before modules) ── -->
+  <script src="https://cdn.jsdelivr.net/npm/globe.gl@2/dist/globe.gl.min.js"></script>
+
+  <!-- ── Scripts ── -->
+  <script type="module" src="js/main.js"></script>
+
+</body>
+</html>
