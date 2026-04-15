@@ -33,22 +33,16 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Particle canvas — behind globe, very subtle ── */
-#bg-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.18;
-}
-
-/* ── Globe — fixed full-screen background ── */
+/* ── Mapbox globe — fixed full-screen background ── */
 #globe-bg {
   position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
   background: radial-gradient(ellipse at center, #060d1f 0%, #010305 100%);
+  /* Force GPU composite layer so scroll never triggers a re-paint of the background */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 #globe-container {
@@ -60,24 +54,10 @@ body {
   transition: opacity 1.2s ease;
 }
 
-#satellite-container {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.4s ease;
-}
-
-#satellite-container.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-#satellite-container .leaflet-control-zoom,
-#satellite-container .leaflet-control-attribution { display: none !important; }
+/* ── Mapbox controls — hide all UI chrome ── */
+.mapboxgl-ctrl,
+.mapboxgl-ctrl-attrib,
+.mapboxgl-ctrl-logo { display: none !important; }
 
 /* ── Dark tint — content readability over globe ── */
 #globe-overlay {
@@ -224,6 +204,8 @@ section { position: relative; z-index: 3; }
   z-index: 100;
   display: none;
   flex-direction: column;
+  /* Isolated overlay — changes inside it don't affect layout of the rest of the page */
+  contain: layout style;
 }
 
 #journey-player.active { display: flex; }
@@ -563,9 +545,9 @@ section { position: relative; z-index: 3; }
   margin: 0 auto;
 }
 
-/* Tall scroll container — scroll through 5 stops */
+/* Tall scroll container — 900vh gives ~70vh per waypoint, enough to read each story */
 .journey-scroll-container {
-  height: 450vh;
+  height: 900vh;
   position: relative;
 }
 
@@ -577,12 +559,15 @@ section { position: relative; z-index: 3; }
   pointer-events: none;
 }
 
-/* Zoom level badge — fixed, top right, always visible */
+/* Zoom level badge — only visible inside journey section */
 .globe-zoom-badge {
   position: fixed;
   top: 1.25rem;
   right: 1.5rem;
   z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -616,11 +601,13 @@ section { position: relative; z-index: 3; }
   transform: translateY(-50%);
   z-index: 20;
   pointer-events: auto;
-  width: 290px;
-  background: rgba(2, 6, 14, 0.84);
-  border: 1px solid rgba(255,255,255,0.09);
+  width: 340px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: rgba(2, 6, 14, 0.88);
+  border: 1px solid rgba(255,255,255,0.11);
   border-radius: 20px;
-  padding: 1.75rem;
+  padding: 2rem;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -636,29 +623,29 @@ section { position: relative; z-index: 3; }
 
 .globe-stop-location {
   font-family: var(--font-display);
-  font-size: 1.9rem;
+  font-size: 2.4rem;
   font-weight: 300;
-  line-height: 1.15;
-  margin-bottom: 0.4rem;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .globe-stop-coords {
   font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   color: var(--accent-gold);
   letter-spacing: 0.08em;
-  margin-bottom: 1rem;
-  opacity: 0.8;
+  margin-bottom: 1.25rem;
+  opacity: 0.9;
 }
 
 .globe-stop-text {
-  font-size: 0.83rem;
-  line-height: 1.8;
-  color: rgba(248, 250, 252, 0.75);
+  font-size: 0.97rem;
+  line-height: 1.85;
+  color: rgba(248, 250, 252, 0.88);
 }
 
-.globe-stop-text p { margin-bottom: 0.7em; }
+.globe-stop-text p { margin-bottom: 0.85em; }
 .globe-stop-text p:last-child { margin-bottom: 0; }
 
 /* Stop dots bar — fixed bottom centre, only in journey */
@@ -740,7 +727,7 @@ section { position: relative; z-index: 3; }
   border-color: rgba(245,158,11,0.4);
 }
 
-/* Story panel + dots only visible when in journey section */
+/* Story panel, dots, and badge — only visible when body has in-journey class */
 .globe-story-panel,
 .globe-stop-dots-bar {
   opacity: 0;
@@ -750,6 +737,11 @@ section { position: relative; z-index: 3; }
 
 .globe-story-panel.panel-visible,
 .globe-stop-dots-bar.panel-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.in-journey .globe-zoom-badge {
   opacity: 1;
   pointer-events: auto;
 }
@@ -1129,6 +1121,49 @@ section { position: relative; z-index: 3; }
 
 .weakness-item.expanded .weakness-item-detail { display: block; }
 
+/* Weakness paragraph mode */
+.weakness-paragraph {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  font-size: 1rem;
+  line-height: 1.9;
+  color: rgba(248,250,252,0.87);
+}
+
+.weakness-paragraph p { margin-bottom: 1.4em; }
+.weakness-paragraph p:last-child { margin-bottom: 0; }
+
+/* AI story text */
+.ai-story-text {
+  font-size: 0.96rem;
+  line-height: 1.9;
+  color: rgba(248,250,252,0.85);
+}
+
+.ai-story-text p { margin-bottom: 1.3em; }
+.ai-story-text p:last-child { margin-bottom: 0; }
+
+/* Timeline closing statement */
+.timeline-closing {
+  text-align: center;
+  padding: 4rem 2rem 2rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 300;
+  line-height: 1.5;
+  color: rgba(248,250,252,0.7);
+  letter-spacing: -0.01em;
+}
+
+.timeline-closing p { margin-bottom: 0.4em; }
+.timeline-closing strong {
+  color: var(--accent-gold);
+  font-weight: 400;
+}
+
 /* 5 non-negotiables */
 .five-rules {
   border: 1px solid rgba(16,185,129,0.3);
@@ -1430,8 +1465,209 @@ footer strong { color: var(--text-primary); }
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.8s ease, transform 0.8s ease;
+  /* Promote to own layer before animation starts — prevents layout recalc on reveal */
+  will-change: opacity, transform;
 }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+  /* Release the layer hint once animation is done */
+  will-change: auto;
+}
+
+/* ── Reduced motion — respect system accessibility setting ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+  .scroll-line { animation: none; }
+}
+
+/* ══════════════════════════════
+   AI COURSE SECTION
+══════════════════════════════ */
+
+#ai-course {
+  padding: 8rem 2rem;
+}
+
+/* Three-column takeaway grid */
+.ai-takeaway-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.ai-takeaway-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.ai-takeaway-card:hover {
+  background: var(--glass-hover);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.ai-takeaway-card[data-takeaway="hoped"] { border-top: 2px solid rgba(148,163,184,0.4); }
+.ai-takeaway-card[data-takeaway="learned"] { border-top: 2px solid var(--accent-blue); }
+.ai-takeaway-card[data-takeaway="applying"] { border-top: 2px solid var(--accent-green); }
+
+.takeaway-icon {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+}
+
+.ai-takeaway-card[data-takeaway="learned"] .takeaway-icon { color: var(--accent-blue); }
+.ai-takeaway-card[data-takeaway="applying"] .takeaway-icon { color: var(--accent-green); }
+
+.takeaway-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+  font-family: var(--font-mono);
+}
+
+.ai-takeaway-card[data-takeaway="learned"] .takeaway-label { color: var(--accent-blue); }
+.ai-takeaway-card[data-takeaway="applying"] .takeaway-label { color: var(--accent-green); }
+
+.takeaway-body {
+  font-size: 0.9rem;
+  line-height: 1.85;
+  color: rgba(248,250,252,0.82);
+}
+
+.takeaway-body p { margin-bottom: 1em; }
+.takeaway-body p:last-child { margin-bottom: 0; }
+
+/* Course progression map */
+.ai-course-map {
+  margin-bottom: 3rem;
+}
+
+.course-map-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  font-family: var(--font-mono);
+}
+
+.course-map-nodes {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+}
+
+.course-node {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  position: relative;
+  transition: background var(--transition);
+}
+
+.course-node:hover { background: var(--glass-hover); }
+
+.course-node-highlight {
+  border-color: rgba(245,158,11,0.35);
+  background: rgba(245,158,11,0.04);
+}
+
+.course-node-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: 0 0 18px rgba(245,158,11,0.12);
+  pointer-events: none;
+}
+
+.course-node-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.course-node-highlight .course-node-num { color: var(--accent-gold); }
+
+.course-node-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.course-node-detail {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* Final project callout */
+.ai-final-project {
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 20px;
+  padding: 2.5rem;
+  background: rgba(16,185,129,0.04);
+}
+
+.final-project-tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-green);
+  margin-bottom: 0.5rem;
+  font-family: var(--font-mono);
+}
+
+.final-project-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 300;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.final-project-desc {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: rgba(248,250,252,0.82);
+  max-width: 800px;
+  margin-bottom: 1.5rem;
+}
+
+.final-project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.final-project-stack span {
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(16,185,129,0.3);
+  color: var(--accent-green);
+  font-family: var(--font-mono);
+}
 
 /* ══════════════════════════════
    RESPONSIVE
@@ -1445,6 +1681,8 @@ footer strong { color: var(--text-primary); }
   .map-nodes { grid-template-columns: repeat(3, 1fr); }
   .courses-grid { grid-template-columns: 1fr; }
   .ai-tools-grid { grid-template-columns: 1fr; }
+  .ai-takeaway-grid { grid-template-columns: 1fr; }
+  .course-map-nodes { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 640px) {
@@ -1452,8 +1690,8 @@ footer strong { color: var(--text-primary); }
   .weakness-categories { grid-template-columns: 1fr; }
   .player-ui { padding: 1rem; gap: 1rem; }
 
-  /* Journey — shorter on mobile so it doesn't take forever */
-  .journey-scroll-container { height: 280vh; }
+  /* Journey — mobile gets 550vh (shorter than desktop but still readable) */
+  .journey-scroll-container { height: 550vh; }
 
   /* Story panel — move to bottom on mobile, full width */
   .globe-story-panel {

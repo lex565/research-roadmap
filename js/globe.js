@@ -1,171 +1,391 @@
 // ============================================================
-// GLOBE — Fixed full-screen background, section-aware
+// GLOBE — Mapbox GL JS v3
 //
-// Sections sync:
-//   hero          → global rotation, Asia/Pacific
-//   journey-map   → scroll-driven 5-stop flight (+ satellite at street level)
-//   profile       → Southern Africa (research area)
-//   weaknesses    → Zimbabwe close-up
-//   courses       → Hangzhou
-//   roadmap       → World view, arc route visible
+// Performance rules:
+//   - Zero setPaintProperty calls after load (no dasharray animation)
+//   - Auto-rotation capped at 20fps
+//   - IntersectionObserver bypassed during autoplay (no competing easeTo)
+//   - Single WebGL context (Three.js disabled)
+//
+// Buildings:  rise zoom 13 → 18  (slow, dramatic)
+// Scroll cam: easeTo(300ms, linear) — smooth glide
+// Arcs:       static line-gradient (no JS animation)
 // ============================================================
 
-// ── Section views (non-journey) ────────────────────────────
+const TOKEN = 'pk.eyJ1IjoidGFuYWthYWxleCIsImEiOiJjbW56cDVucGowZjE0Mm9wbTR4NmZtcGZhIn0.ovxKoSGBzdEiCxdZo-BvFw';
+
+// ── Section camera views ───────────────────────────────────
 const SECTION_VIEWS = {
-  hero:            { lat: 20.0,    lng: 108.0,  alt: 2.5 },
-  'southern-africa':{ lat: -22.0,  lng: 28.0,   alt: 0.95 },
-  zimbabwe:        { lat: -19.5,   lng: 30.5,   alt: 0.55 },
-  hangzhou:        { lat: 30.274,  lng: 120.155, alt: 0.55 },
-  world:           { lat: 5.0,     lng: 20.0,   alt: 3.2  }
+  hero:              { center: [108.0,    20.0],   zoom: 1.8,  pitch: 45, bearing: 0  },
+  'southern-africa': { center: [28.0,    -22.0],   zoom: 4.8,  pitch: 35, bearing: 0  },
+  zimbabwe:          { center: [32.67,   -18.97],  zoom: 6.5,  pitch: 52, bearing: 10 },
+  hangzhou:          { center: [120.155,  30.274], zoom: 6.5,  pitch: 30, bearing: 0  },
+  world:             { center: [15.0,     5.0],    zoom: 1.5,  pitch: 20, bearing: 0  }
 };
 
-// ── Journey waypoints (progress 0→1 within journey section) ─
-// [pct, lat, lng, alt, stopIndex (-1 = mid-flight), zoomLabel]
+// ── Journey waypoints ──────────────────────────────────────
+// [progress, lng, lat, zoom, pitch, bearing, stopIndex, label]
+// Extra mid-points between country→street slow the zoom-in so the
+// building rise is gradual and readable
 const WAYPOINTS = [
-  [0.00,  20.0,   108.0,  2.8,  -1, 'Global View'],
-  [0.07,  30.274, 120.155, 0.5,  0, 'Country Level'],
-  [0.16,  30.274, 120.155, 0.022,0, 'Street Level'],
-  [0.23,  10.0,   78.0,   2.6, -1, 'Global View'],
-  [0.31, -17.825, 31.033, 0.48, 1, 'Country Level'],
-  [0.40, -17.825, 31.033, 0.02, 1, 'Street Level'],
-  [0.48, -22.0,   28.0,   0.95, 2, 'Regional View'],
-  [0.55, -22.0,   28.0,   0.95, 2, 'Regional View'],
-  [0.62,  5.0,    70.0,   2.6, -1, 'Global View'],
-  [0.70,  30.274, 120.155, 0.5, 3, 'Country Level'],
-  [0.80,  30.274, 120.155, 0.022,3,'Street Level'],
-  [0.88,  15.0,   45.0,   2.4, -1, 'Global View'],
-  [1.00,   5.0,   15.0,   3.5,  4, 'Global View']
+  [0.00,  108.0,    20.0,    1.8,  45,   0,  -1, 'Global View'  ],
+  [0.07,  120.155,  30.274,  7.0,  30,   0,   0, 'Country Level'],
+  [0.16,  120.155,  30.274, 15.5,  62,  10,   0, 'Street Level' ], // direct dive — no hover
+  [0.23,   78.0,    10.0,    1.8,  35,  15,  -1, 'Global View'  ],
+  [0.31,   31.5,   -18.2,    7.0,  30,   0,   1, 'Country Level'],
+  [0.40,   32.67,  -18.97,  15.5,  65,  10,   1, 'Street Level' ], // direct dive — Mutare
+  [0.48,   28.0,   -22.0,    5.0,  40,   0,   2, 'Regional View'],
+  [0.55,   28.0,   -22.0,    5.0,  40,   5,   2, 'Regional View'],
+  [0.62,   70.0,    5.0,     1.8,  30,  15,  -1, 'Global View'  ],
+  [0.70,  120.155,  30.274,  7.0,  30,   0,   3, 'Country Level'],
+  [0.80,  120.155,  30.274, 15.5,  62,  20,   3, 'Street Level' ], // direct dive — return
+  [0.88,   45.0,   15.0,     1.8,  30,  25,  -1, 'Global View'  ],
+  [1.00,   15.0,    5.0,     1.5,  20,   0,   4, 'Global View'  ],
 ];
 
-// ── Stop content ───────────────────────────────────────────
+// ── Journey stop panels ────────────────────────────────────
 const STOPS = [
   {
     id: 0, counter: '01 / 05', color: '#F59E0B',
     label: 'Hangzhou, China', coords: '30.274°N · 120.155°E',
-    leafletZoom: 13,
-    text: `This is where the work began.\n\nBeihang University International Campus. September 2025. A 10,000 km move from home — a research idea barely a sentence long, and seven courses starting the following Monday.`
+    text: `This is where the work began.\n\nBeihang University, Hangzhou. September 2025. A 10,000 km move from Mutare, Zimbabwe — a research idea barely a sentence long, and seven courses starting the following Monday.\n\nI had already published one paper at bachelor's level. That paper was the seed. This city is where it grew.`
   },
   {
     id: 1, counter: '02 / 05', color: '#D97706',
-    label: 'Harare, Zimbabwe', coords: '17.825°S · 31.033°E',
-    leafletZoom: 13,
-    text: `This is home.\n\nCyclone Idai did not hit an abstract geography. It hit the Chimanimani mountains I know. Researching this from 10,000 km away carries a particular weight.\n\nThat weight is not a weakness. It is a reason.`
+    label: 'Mutare, Zimbabwe', coords: '18.97°S · 32.67°E',
+    text: `This is home.\n\nMutare sits at the foot of the Chimanimani mountains — the same range Cyclone Idai swept through in March 2019. Every time I open the TROPOMI data and see the SIF signal collapse over Sofala Province, I am not just looking at pixels.\n\nI am looking at a place I know. That weight is not a weakness. It is the reason this research exists.`
   },
   {
     id: 2, counter: '03 / 05', color: '#10B981',
     label: 'Southern Africa', coords: '22.0°S · 28.0°E',
-    leafletZoom: null,
-    text: `The study area. The cyclone belt.\n\nWhere TROPOMI's SIF signal detects photosynthetic suppression that NDVI alone cannot read. Cyclones Idai, Chalane, Freddy. Three storms. One question: what does SIF tell us that nothing else does?`
+    text: `The study area. The cyclone belt.\n\nCyclones Idai, Chalane, Freddy. Three storms across six years. Where TROPOMI's SIF signal detects photosynthetic suppression weeks before NDVI registers any structural change.\n\nOne question drives all of it: what does SIF tell us that no other index can?`
   },
   {
     id: 3, counter: '04 / 05', color: '#3B82F6',
     label: 'Hangzhou, China', coords: '30.274°N · 120.155°E',
-    leafletZoom: 14,
-    text: `Back here. Writing it down.\n\nFour Methods revisions. Weekly supervisor meetings. Six Python scripts — every figure in the paper built in this city, 10,000 km from the geography it describes.`
+    text: `Back here. Writing it down.\n\nFour complete Methods revisions. Weekly supervisor meetings with Prof. Feng. Six Python scripts that built every figure in the paper — all of it done in this city, 10,000 km from the geography it describes.\n\nThe manuscript is not finished. It is being made attack-resistant. There is a difference.`
   },
   {
     id: 4, counter: '05 / 05', color: '#F0ABFC',
-    label: 'What comes next?', coords: 'The World',
-    leafletZoom: null,
-    text: `July 2026 — journal submission.\n\nFinal year — second manuscript. SIF recovery trajectories. Sentinel-1 SAR integration. The whole SWIO cyclone basin, 2000–2024.\n\nThe road is long. The signal is real.`
+    label: 'What comes next', coords: 'July 2026 and beyond',
+    text: `Journal submission: July 2026.\n\nSecond manuscript in the final year: SIF recovery trajectories, Sentinel-1 SAR integration, the full SWIO cyclone basin 2000 to 2024.\n\nI came from Mutare with a question. I am building the answer here, one revision at a time.\n\nI cannot be Albert Einstein. But I can be Tanaka Alex Mbendana of my generation.`
   }
 ];
 
-const POINTS = [
-  { lat: 30.274,  lng: 120.155, label: 'Hangzhou',     color: '#F59E0B', size: 0.38 },
-  { lat: -17.825, lng: 31.033,  label: 'Harare',       color: '#D97706', size: 0.38 },
-  { lat: -19.0,   lng: 35.3,    label: 'Sofala',       color: '#10B981', size: 0.25 },
-  { lat: -20.165, lng: 32.673,  label: 'Chimanimani',  color: '#EF4444', size: 0.25 },
-  { lat: -25.747, lng: 28.187,  label: 'Johannesburg', color: '#10B981', size: 0.2  },
-  { lat: 40.005,  lng: 116.333, label: 'Beijing',      color: '#94A3B8', size: 0.2  }
+// ── Arcs [lng, lat] ────────────────────────────────────────
+const ARC_DEFS = [
+  { from: [120.155,  30.274], to: [32.67,  -18.97],  color: '#F59E0B' },
+  { from: [32.67,   -18.97],  to: [28.0,   -22.0],   color: '#D97706' },
+  { from: [28.0,    -22.0],   to: [120.155, 30.274], color: '#10B981' },
+  { from: [120.155,  30.274], to: [15.0,    5.0],    color: '#3B82F6' },
 ];
 
-const ARCS = [
-  { startLat: 30.274,  startLng: 120.155, endLat: -17.825, endLng: 31.033,  color: ['rgba(245,158,11,0.8)', 'rgba(215,119,7,0.8)']  },
-  { startLat: -17.825, startLng: 31.033,  endLat: -22.0,   endLng: 28.0,    color: ['rgba(215,119,7,0.8)',  'rgba(16,185,129,0.8)'] },
-  { startLat: -22.0,   startLng: 28.0,    endLat: 30.274,  endLng: 120.155, color: ['rgba(16,185,129,0.8)', 'rgba(59,130,246,0.8)'] },
-  { startLat: 30.274,  startLng: 120.155, endLat: 5.0,     endLng: 15.0,    color: ['rgba(59,130,246,0.8)', 'rgba(240,171,252,0.8)'] }
+// ── Points [lng, lat] ──────────────────────────────────────
+const POINT_DEFS = [
+  { center: [120.155, 30.274], label: 'Hangzhou',    color: '#F59E0B', radius: 6 },
+  { center: [32.67,  -18.97],  label: 'Mutare',      color: '#D97706', radius: 6 },
+  { center: [35.3,   -19.0],   label: 'Sofala',      color: '#10B981', radius: 4 },
+  { center: [32.673, -20.165], label: 'Chimanimani', color: '#EF4444', radius: 4 },
+  { center: [28.187, -25.747], label: 'Joburg',      color: '#10B981', radius: 3 },
+  { center: [116.333, 40.005], label: 'Beijing',     color: '#94A3B8', radius: 3 }
 ];
 
 // ── State ──────────────────────────────────────────────────
-const isMobile       = window.innerWidth < 768;
-let globeInstance    = null;
-let leafletMap       = null;
-let lastStopIndex    = -2;
-let satelliteVisible = false;
-let inJourney        = false;
-let ticking          = false;
-let currentSection   = 'hero';
+let map            = null;
+let autoRotating   = true;
+let autoRotBearing = 0;
+let rotRaf         = null;
+let rotLastTs      = 0;
+let inJourney      = false;
+let lastStopIndex  = -2;
+let ticking        = false;
+let currentSection = 'hero';
+let autoplayMode   = false;   // true while autoplay is running — skip IntersectionObserver
+
+// ── Public: called by autoplay.js ─────────────────────────
+export function setAutoplayMode(active) {
+  autoplayMode = active;
+  if (!active) currentSection = '';
+}
+
+// Slow 40° orbit during street-level dwells — keeps the map alive visually.
+// durationMs should match the dwell time minus ~500ms lead-out.
+export function startOrbit(durationMs) {
+  if (!map) return;
+  map.easeTo({
+    bearing:  map.getBearing() + 40,
+    duration: durationMs,
+    easing:   t => t,
+    essential: true
+  });
+}
+
+export function stopOrbit() {
+  if (map) map.stop();
+}
+
+// ── Great circle path ──────────────────────────────────────
+function greatCircle(from, to, steps = 64) {
+  const r = d => d * Math.PI / 180;
+  const [ln1, lt1] = [r(from[0]), r(from[1])];
+  const [ln2, lt2] = [r(to[0]),   r(to[1])];
+  const d = 2 * Math.asin(Math.sqrt(
+    Math.pow(Math.sin((lt2 - lt1) / 2), 2) +
+    Math.cos(lt1) * Math.cos(lt2) * Math.pow(Math.sin((ln2 - ln1) / 2), 2)
+  ));
+  if (d < 0.0001) return [from, to];
+  const pts = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const A = Math.sin((1 - t) * d) / Math.sin(d);
+    const B = Math.sin(t * d) / Math.sin(d);
+    const x = A * Math.cos(lt1) * Math.cos(ln1) + B * Math.cos(lt2) * Math.cos(ln2);
+    const y = A * Math.cos(lt1) * Math.sin(ln1) + B * Math.cos(lt2) * Math.sin(ln2);
+    const z = A * Math.sin(lt1) + B * Math.sin(lt2);
+    pts.push([
+      Math.atan2(y, x) * 180 / Math.PI,
+      Math.atan2(z, Math.sqrt(x * x + y * y)) * 180 / Math.PI
+    ]);
+  }
+  return pts;
+}
 
 // ── Init ───────────────────────────────────────────────────
 export function initGlobe() {
-  const globeEl = document.getElementById('globe-container');
-  const satEl   = document.getElementById('satellite-container');
-  if (!globeEl || !window.Globe) return;
+  const container = document.getElementById('globe-container');
+  if (!container || !window.mapboxgl) return;
 
-  // Globe.gl
-  globeInstance = Globe({ animateIn: true })(globeEl);
-  globeInstance
-    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-    .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-    .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
-    .showAtmosphere(!isMobile)
-    .atmosphereColor('#1e3a8a')
-    .atmosphereAltitude(0.15)
-    .arcsData(ARCS)
-    .arcColor('color')
-    .arcAltitude(0.3)
-    .arcStroke(isMobile ? 0.28 : 0.42)
-    .arcDashLength(0.36)
-    .arcDashGap(0.12)
-    .arcDashAnimateTime(isMobile ? 3200 : 2200)
-    .pointsData(POINTS)
-    .pointColor('color')
-    .pointAltitude(0.01)
-    .pointRadius('size')
-    .labelsData(isMobile ? [] : POINTS)
-    .labelLat('lat').labelLng('lng').labelText('label')
-    .labelSize(0.45)
-    .labelColor(() => 'rgba(248,250,252,0.6)')
-    .labelResolution(isMobile ? 2 : 3)
-    .labelAltitude(0.012)
-    .enablePointerInteraction(false); // disabled so globe doesn't block page scroll
+  mapboxgl.accessToken = TOKEN;
 
-  globeInstance.controls().autoRotate      = true;
-  globeInstance.controls().autoRotateSpeed = isMobile ? 0.15 : 0.28;
-  globeInstance.controls().enableZoom      = false;
-  globeInstance.pointOfView(SECTION_VIEWS.hero, 0);
+  map = new mapboxgl.Map({
+    container:                'globe-container',
+    style:                    'mapbox://styles/mapbox/dark-v11',
+    projection:               'globe',
+    center:                   [108.0, 20.0],
+    zoom:                     1.8,
+    pitch:                    45,
+    bearing:                  0,
+    interactive:              false,
+    attributionControl:       false,
+    logoPosition:             'bottom-right',
+    antialias:                false,   // halves GPU fill cost — big win for background map
+    fadeDuration:             0,        // tiles appear instantly — no fade-in delay
+    preserveDrawingBuffer:    false,
+    trackResize:              true,
+    optimizeForTerrain:       false,
+    maxTileCacheSize:         200,     // larger cache prevents re-fetching tiles during journey
+    localIdeographFontFamily: 'sans-serif' // skip downloading CJK font glyph files
+  });
 
-  // Leaflet satellite
-  if (satEl && window.L) {
-    leafletMap = L.map(satEl, {
-      zoomControl: false, attributionControl: false,
-      dragging: false, scrollWheelZoom: false, doubleClickZoom: false
-    }).setView([30.274, 120.155], 13);
-
-    L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 19 }
-    ).addTo(leafletMap);
-
-    L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 19, opacity: 0.55 }
-    ).addTo(leafletMap);
-  }
-
-  _buildDots();
-  _initIntersectionObserver();
-  window.addEventListener('scroll', _onScroll, { passive: true });
+  map.on('load', () => {
+    _addFog();
+    _add3DBuildings();
+    _addArcs();
+    _addPoints();
+    _buildDots();
+    _initIntersectionObserver();
+    window.addEventListener('scroll', _onScroll, { passive: true });
+    _startAutoRotation();
+  });
 }
 
-// ── Intersection Observer — watches all data-globe sections ─
+// ── Fog ────────────────────────────────────────────────────
+function _addFog() {
+  map.setFog({
+    color:            'rgba(4, 8, 16, 0.9)',
+    'high-color':     '#1a2d5a',
+    'horizon-blend':  0.03,
+    'space-color':    '#010305',
+    'star-intensity': 0.82
+  });
+}
+
+// ── 3D Buildings — cinematic rise zoom 11 → 15.5 ──────────
+// Rise window ends exactly at street-level target zoom (15.5)
+// so buildings are FULLY risen the moment the camera lands.
+// Wide start (zoom 11) = slow, visible rise during the whole dive.
+function _add3DBuildings() {
+  const RISE_START = 11;
+  const RISE_END   = 15.5;
+
+  // Warm-lit building colours: emerge from near-black and brighten as they rise
+  const colorExpr = [
+    'interpolate', ['linear'], ['zoom'],
+    RISE_START,     '#0d1520',
+    13,             '#1e3050',
+    14,             '#2d4a78',
+    RISE_END,       '#3d6096'
+  ];
+  const heightExpr = ['interpolate', ['linear'], ['zoom'],
+    RISE_START, 0,
+    RISE_END,   ['get', 'height']
+  ];
+  const baseExpr = ['interpolate', ['linear'], ['zoom'],
+    RISE_START, 0,
+    RISE_END,   ['get', 'min_height']
+  ];
+  // Opacity ramps quickly — buildings become visible as soon as they poke up
+  const opacityExpr = ['interpolate', ['linear'], ['zoom'],
+    RISE_START,       0,
+    RISE_START + 0.8, 0.5,
+    13.5,             0.82,
+    RISE_END,         0.96
+  ];
+
+  if (map.getLayer('building-extrusion')) {
+    map.setPaintProperty('building-extrusion', 'fill-extrusion-color',   colorExpr);
+    map.setPaintProperty('building-extrusion', 'fill-extrusion-height',  heightExpr);
+    map.setPaintProperty('building-extrusion', 'fill-extrusion-base',    baseExpr);
+    map.setPaintProperty('building-extrusion', 'fill-extrusion-opacity', opacityExpr);
+    return;
+  }
+
+  if (map.getLayer('building')) map.removeLayer('building');
+
+  map.addLayer({
+    id:             '3d-buildings',
+    source:         'composite',
+    'source-layer': 'building',
+    filter:         ['==', 'extrude', 'true'],
+    type:           'fill-extrusion',
+    minzoom:        RISE_START,
+    paint: {
+      'fill-extrusion-color':   colorExpr,
+      'fill-extrusion-height':  heightExpr,
+      'fill-extrusion-base':    baseExpr,
+      'fill-extrusion-opacity': opacityExpr
+    }
+  });
+}
+
+// ── Arcs — static line-gradient (zero JS animation cost) ──
+// line-gradient draws a color fade along each arc without any
+// setPaintProperty calls after load.
+function _addArcs() {
+  ARC_DEFS.forEach((arc, i) => {
+    const coords = greatCircle(arc.from, arc.to, 72);
+
+    // lineMetrics:true is required for line-gradient
+    map.addSource(`arc-${i}`, {
+      type:        'geojson',
+      lineMetrics: true,
+      data: { type: 'Feature', geometry: { type: 'LineString', coordinates: coords } }
+    });
+
+    // Dim trail
+    map.addLayer({
+      id: `arc-trail-${i}`, type: 'line', source: `arc-${i}`,
+      paint: {
+        'line-color': arc.color,
+        'line-width': 1.0,
+        'line-opacity': 0.18
+      }
+    });
+
+    // Bright gradient line — no JS needed, fully GPU-driven
+    map.addLayer({
+      id: `arc-grad-${i}`, type: 'line', source: `arc-${i}`,
+      paint: {
+        'line-width': 2.0,
+        'line-gradient': [
+          'interpolate', ['linear'], ['line-progress'],
+          0,   'rgba(255,255,255,0.0)',
+          0.1, arc.color,
+          0.5, arc.color,
+          0.9, arc.color,
+          1,   'rgba(255,255,255,0.0)'
+        ]
+      }
+    });
+  });
+}
+
+// ── Points ─────────────────────────────────────────────────
+function _addPoints() {
+  const features = POINT_DEFS.map(p => ({
+    type: 'Feature',
+    geometry: { type: 'Point', coordinates: p.center },
+    properties: { label: p.label, color: p.color, radius: p.radius }
+  }));
+
+  map.addSource('pts', {
+    type: 'geojson',
+    data: { type: 'FeatureCollection', features }
+  });
+
+  map.addLayer({ id: 'pts-glow', type: 'circle', source: 'pts',
+    paint: {
+      'circle-radius':  ['*', ['get', 'radius'], 3.2],
+      'circle-color':   ['get', 'color'],
+      'circle-opacity': 0.12,
+      'circle-blur':    1.0
+    }
+  });
+
+  map.addLayer({ id: 'pts-core', type: 'circle', source: 'pts',
+    paint: {
+      'circle-radius':       ['get', 'radius'],
+      'circle-color':        ['get', 'color'],
+      'circle-opacity':      0.92,
+      'circle-stroke-width': 1,
+      'circle-stroke-color': 'rgba(255,255,255,0.35)'
+    }
+  });
+
+  if (window.innerWidth >= 768) {
+    map.addLayer({ id: 'pts-labels', type: 'symbol', source: 'pts',
+      layout: {
+        'text-field':         ['get', 'label'],
+        'text-font':          ['DIN Pro Medium', 'Arial Unicode MS Regular'],
+        'text-size':          11,
+        'text-offset':        [0, 1.8],
+        'text-anchor':        'top',
+        'text-allow-overlap': false
+      },
+      paint: {
+        'text-color':      'rgba(248,250,252,0.65)',
+        'text-halo-color': 'rgba(0,0,0,0.55)',
+        'text-halo-width': 1.2
+      }
+    });
+  }
+}
+
+// ── Auto-rotation — capped at 20fps ───────────────────────
+function _startAutoRotation() {
+  autoRotating = true;
+  function tick(ts) {
+    if (!autoRotating) return;
+    rotRaf = requestAnimationFrame(tick);
+    if (ts - rotLastTs < 50) return; // 50ms = 20fps cap
+    rotLastTs = ts;
+    autoRotBearing = (autoRotBearing + 0.12) % 360;
+    map.setBearing(autoRotBearing);
+  }
+  rotRaf = requestAnimationFrame(tick);
+}
+
+function _stopAutoRotation() {
+  autoRotating = false;
+  if (rotRaf) { cancelAnimationFrame(rotRaf); rotRaf = null; }
+}
+
+// ── First symbol layer helper ──────────────────────────────
+function _firstSymbolLayer() {
+  for (const layer of map.getStyle().layers) {
+    if (layer.type === 'symbol') return layer.id;
+  }
+  return undefined;
+}
+
+// ── IntersectionObserver — section-aware camera ────────────
 function _initIntersectionObserver() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
+      if (autoplayMode) return;           // autoplay drives scroll — don't interfere
       const key = entry.target.getAttribute('data-globe');
-      if (!key || key === 'journey') return; // journey handled by scroll
+      if (!key || key === 'journey') return;
       _flyToSection(key);
     });
   }, { threshold: 0.35 });
@@ -174,19 +394,26 @@ function _initIntersectionObserver() {
 }
 
 function _flyToSection(key) {
-  if (currentSection === key) return;
+  if (currentSection === key || !map) return;
   currentSection = key;
   const view = SECTION_VIEWS[key];
-  if (!view || !globeInstance) return;
+  if (!view) return;
 
-  _hideSatellite();
-  globeInstance.controls().autoRotate = (key === 'hero' || key === 'world');
-  globeInstance.controls().autoRotateSpeed = 0.28;
-  globeInstance.pointOfView(view, 2200);
-  _updateBadge(view.alt);
+  if (key === 'hero' || key === 'world') {
+    _startAutoRotation();
+  } else {
+    _stopAutoRotation();
+  }
+
+  map.easeTo({
+    ...view,
+    duration: 1800,
+    easing:   t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+  });
+  _updateBadge(view.zoom);
 }
 
-// ── Scroll handler ─────────────────────────────────────────
+// ── Scroll ─────────────────────────────────────────────────
 function _onScroll() {
   if (!ticking) { requestAnimationFrame(_update); ticking = true; }
 }
@@ -194,54 +421,41 @@ function _onScroll() {
 function _update() {
   ticking = false;
   const section = document.getElementById('journey-map');
-  if (!section || !globeInstance) return;
+  if (!section || !map) return;
 
-  const rect        = section.getBoundingClientRect();
-  const scrollStart = rect.top  <= 0;
-  const scrollEnd   = rect.bottom >= window.innerHeight;
-  const nowInJourney = scrollStart && scrollEnd;
+  const rect         = section.getBoundingClientRect();
+  const nowInJourney = rect.top <= 0 && rect.bottom >= window.innerHeight;
 
-  // Entering / leaving journey
   if (nowInJourney !== inJourney) {
     inJourney = nowInJourney;
     document.body.classList.toggle('in-journey', inJourney);
     document.querySelector('.globe-story-panel')?.classList.toggle('panel-visible', inJourney);
     document.querySelector('.globe-stop-dots-bar')?.classList.toggle('panel-visible', inJourney);
-    if (!inJourney) {
-      _hideSatellite();
-      lastStopIndex = -2;
-    }
+    if (inJourney) _stopAutoRotation();
+    else lastStopIndex = -2;
   }
 
   if (!inJourney) return;
 
-  // Calculate progress through journey section
-  const scrollContainer = section.querySelector('.journey-scroll-container');
-  if (!scrollContainer) return;
-  const cRect    = scrollContainer.getBoundingClientRect();
-  const total    = scrollContainer.offsetHeight - window.innerHeight;
-  const scrolled = -cRect.top;
-  const progress = Math.max(0, Math.min(1, scrolled / total));
+  const sc       = section.querySelector('.journey-scroll-container');
+  if (!sc) return;
+  const total    = sc.offsetHeight - window.innerHeight;
+  const progress = Math.max(0, Math.min(1, -sc.getBoundingClientRect().top / total));
+  const pov      = _interpolate(progress);
 
-  const pov = _interpolate(progress);
+  // Smooth glide — each easeTo cancels the previous, camera follows scroll
+  map.easeTo({
+    center:    [pov.lng, pov.lat],
+    zoom:      pov.zoom,
+    pitch:     pov.pitch,
+    bearing:   pov.bearing,
+    duration:  300,
+    easing:    t => t,
+    essential: true
+  });
 
-  // Update globe camera
-  globeInstance.controls().autoRotate = false;
-  globeInstance.pointOfView({ lat: pov.lat, lng: pov.lng, altitude: pov.alt }, 160);
+  _updateBadge(pov.zoom, pov.zoomLabel);
 
-  // Update badge
-  _updateBadge(pov.alt, pov.zoomLabel);
-
-  // Satellite crossfade
-  const STREET_THRESH = 0.06;
-  if (pov.alt < STREET_THRESH && !satelliteVisible && pov.stopIndex >= 0 && STOPS[pov.stopIndex]?.leafletZoom) {
-    const stop = STOPS[pov.stopIndex];
-    _showSatellite(stop.lat || pov.lat, stop.lng || pov.lng, stop.leafletZoom);
-  } else if (pov.alt >= STREET_THRESH + 0.02 && satelliteVisible) {
-    _hideSatellite();
-  }
-
-  // Panel update when stop changes
   if (pov.stopIndex >= 0 && pov.stopIndex !== lastStopIndex) {
     lastStopIndex = pov.stopIndex;
     _updatePanel(STOPS[pov.stopIndex]);
@@ -249,52 +463,39 @@ function _update() {
   }
 }
 
-// ── POV interpolation ──────────────────────────────────────
+// ── Camera interpolation ───────────────────────────────────
 function _interpolate(p) {
   let lo = WAYPOINTS[0], hi = WAYPOINTS[WAYPOINTS.length - 1];
   for (let i = 0; i < WAYPOINTS.length - 1; i++) {
-    if (p >= WAYPOINTS[i][0] && p <= WAYPOINTS[i+1][0]) { lo = WAYPOINTS[i]; hi = WAYPOINTS[i+1]; break; }
+    if (p >= WAYPOINTS[i][0] && p <= WAYPOINTS[i + 1][0]) {
+      lo = WAYPOINTS[i]; hi = WAYPOINTS[i + 1]; break;
+    }
   }
   const span = hi[0] - lo[0];
   const t    = span === 0 ? 0 : (p - lo[0]) / span;
-  const e    = t < 0.5 ? 2*t*t : -1+(4-2*t)*t; // ease in-out
+  const e    = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
   return {
-    lat: lo[1] + (hi[1]-lo[1])*e,
-    lng: lo[2] + (hi[2]-lo[2])*e,
-    alt: lo[3] + (hi[3]-lo[3])*e,
-    stopIndex: hi[4],
-    zoomLabel: hi[5]
+    lng:       lo[1] + (hi[1] - lo[1]) * e,
+    lat:       lo[2] + (hi[2] - lo[2]) * e,
+    zoom:      lo[3] + (hi[3] - lo[3]) * e,
+    pitch:     lo[4] + (hi[4] - lo[4]) * e,
+    bearing:   lo[5] + (hi[5] - lo[5]) * e,
+    stopIndex: hi[6],
+    zoomLabel: hi[7]
   };
 }
 
-// ── Satellite ──────────────────────────────────────────────
-function _showSatellite(lat, lng, zoom) {
-  const el = document.getElementById('satellite-container');
-  if (!el || !leafletMap) return;
-  leafletMap.setView([lat, lng], zoom || 13, { animate: false });
-  setTimeout(() => leafletMap.invalidateSize(), 50);
-  el.classList.add('visible');
-  satelliteVisible = true;
-  const badge = document.getElementById('globe-zoom-badge');
-  if (badge) { badge.textContent = 'Satellite · Street Level'; badge.style.color = '#10B981'; badge.style.borderColor = 'rgba(16,185,129,0.4)'; }
-}
-
-function _hideSatellite() {
-  document.getElementById('satellite-container')?.classList.remove('visible');
-  satelliteVisible = false;
-}
-
 // ── Badge ──────────────────────────────────────────────────
-function _updateBadge(alt, label) {
+function _updateBadge(zoom, label) {
   const badge = document.getElementById('globe-zoom-badge');
   if (!badge) return;
-  badge.style.color = '#F59E0B';
+  badge.style.color       = '#F59E0B';
   badge.style.borderColor = 'rgba(245,158,11,0.35)';
   if (label) { badge.textContent = label; return; }
-  if (alt >= 2.2)      badge.textContent = 'Global View';
-  else if (alt >= 0.8) badge.textContent = 'Continental';
-  else if (alt >= 0.15) badge.textContent = 'Country Level';
-  else                 badge.textContent = 'City Level';
+  if (zoom <= 2)       badge.textContent = 'Global View';
+  else if (zoom <= 5)  badge.textContent = 'Continental';
+  else if (zoom <= 9)  badge.textContent = 'Country Level';
+  else                 badge.textContent = 'Street Level';
 }
 
 // ── Panel ──────────────────────────────────────────────────
@@ -307,15 +508,17 @@ function _updatePanel(stop) {
   if (!panel) return;
 
   panel.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
-  panel.style.opacity = '0'; panel.style.transform = 'translateY(10px)';
+  panel.style.opacity    = '0';
+  panel.style.transform  = 'translateY(10px)';
 
   setTimeout(() => {
-    if (ctrEl)   ctrEl.textContent   = stop.counter;
+    if (ctrEl)   ctrEl.textContent  = stop.counter;
     if (locEl)   { locEl.textContent = stop.label; locEl.style.color = stop.color; }
     if (coordEl) coordEl.textContent = stop.coords;
-    if (textEl)  textEl.innerHTML    = stop.text.split('\n\n').map(p => `<p>${p}</p>`).join('');
-    panel.style.opacity = '1'; panel.style.transform = 'translateY(0)';
-  }, 350);
+    if (textEl)  textEl.innerHTML   = stop.text.split('\n\n').map(p => `<p>${p}</p>`).join('');
+    panel.style.opacity   = '1';
+    panel.style.transform = 'translateY(0)';
+  }, 340);
 }
 
 // ── Dots ───────────────────────────────────────────────────
@@ -325,7 +528,8 @@ function _buildDots() {
   el.innerHTML = '';
   STOPS.forEach(s => {
     const d = document.createElement('div');
-    d.className = 'globe-dot'; d.title = s.label;
+    d.className = 'globe-dot';
+    d.title     = s.label;
     el.appendChild(d);
   });
 }
@@ -333,7 +537,7 @@ function _buildDots() {
 function _updateDots(active) {
   document.querySelectorAll('.globe-dot').forEach((d, i) => {
     d.className = 'globe-dot';
-    if (i < active)  d.classList.add('visited');
+    if (i < active)   d.classList.add('visited');
     if (i === active) d.classList.add('active');
   });
 }

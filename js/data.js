@@ -6,7 +6,7 @@
 export const PROFILE = {
   name: "Tanaka Alex Mbendana",
   title: "MSc Remote Sensing & GIS",
-  university: "Beihang University, Beijing, China",
+  university: "Beihang University, Hangzhou, China",
   period: "2025 – 2027",
   origin: "Zimbabwe 🇿🇼",
   publication: {
@@ -156,7 +156,7 @@ export const COURSES = {
       { name: "GNSS Receiver Principals & Design", relevance: "Signals & sensor theory (context for TROPOMI)", color: "#F59E0B" },
       { name: "Introduction to Space Technology", relevance: "Satellite missions, orbits, sensor design", color: "#EF4444" },
       { name: "Overview of China", relevance: "Cultural & academic integration", color: "#EC4899" },
-      { name: "Chinese 1", relevance: "Language for daily life in Beijing", color: "#06B6D4" }
+      { name: "Chinese 1", relevance: "Language for daily life in Hangzhou", color: "#06B6D4" }
     ]
   },
   semester2: {
@@ -166,7 +166,7 @@ export const COURSES = {
       { name: "AI & Large Models", relevance: "AI tools used throughout the research workflow", color: "#7C3AED", key: true },
       { name: "Intelligent Processing of Remote Sensing Images", relevance: "Image processing pipeline for SIF data", color: "#0891B2", key: true },
       { name: "Team Project (HyPlant SIF Study)", relevance: "Parallel SIF research — HyPlant airborne sensor", color: "#059669", key: true },
-      { name: "Chinese 2", relevance: "Continued language study", color: "#BE185D" }
+      { name: "Chinese 2", relevance: "Continued language study in Hangzhou", color: "#BE185D" }
     ]
   }
 };
@@ -176,20 +176,16 @@ export const SCENES = [
     id: 1,
     slug: "arrival",
     title: "Arrival",
-    subtitle: "September 2025 — Beihang University, Beijing",
+    subtitle: "September 2025 — Beihang University, Hangzhou",
     theme: "dawn",
     palette: { bg: "#0f1923", accent: "#F59E0B", text: "#FEF3C7" },
     particles: { color: "#F59E0B", count: 120, speed: 0.3 },
     story: `September 2025. I packed a bag, a laptop, and a research idea that was barely a sentence long.
 
-From Harare to Beijing — a 10,000 km jump across continents, climates, and academic cultures.
+From Mutare, Zimbabwe to Hangzhou, China. A 10,000 km jump across continents, climates, and academic cultures.
 Beihang University. One of China's top aerospace and remote sensing institutions.
-My destination.
 
-I had already published one paper at bachelor's level — on change detection techniques
-in small-area studies. But masters research was different. This was longer. Deeper.
-And I was starting it in a language I barely spoke, in a city I'd never been to,
-surrounded by peers from across the world.
+I had already published one paper at bachelor's level, on change detection techniques in small-area studies in developing countries. That paper was the seed. It proved I could ask a rigorous question and answer it. But a masters research was different. Longer. Deeper. And I was starting it in a language I barely spoke, in a city I had never been to, surrounded by peers from across the world.
 
 The first week was orientation, paperwork, and trying to read a campus map in Mandarin.
 The second week, the real work began.`,
@@ -205,26 +201,19 @@ The second week, the real work began.`,
     particles: { color: "#3B82F6", count: 200, speed: 0.2 },
     story: `Seven courses. Each one a brick.
 
-Remote Sensing — satellites, sensors, the electromagnetic spectrum.
-The language of the Earth viewed from 700 km above.
+Remote Sensing: satellites, sensors, the electromagnetic spectrum. The language of the Earth viewed from 700 km above.
 
-Spatial Data Science — how to think in maps, in scales, in projections.
+Spatial Data Science: how to think in maps, in scales, in projections.
 
-Probability & Statistics — the grammar of scientific claims.
-Without this, every result is just a number.
+Probability and Statistics: the grammar of scientific claims. Without this, every result is just a number.
 
-GNSS Receiver Principals — signals, orbits, precision.
-It also taught me how TROPOMI, the sensor at the heart of my research,
-keeps its orbital geometry so precise.
+GNSS Receiver Principals: signals, orbits, precision. It also taught me how TROPOMI, the sensor at the heart of my research, keeps its orbital geometry so precise.
 
-Introduction to Space Technology — why we go to space,
-what we build, what we can see from there.
+Introduction to Space Technology: why we go to space, what we build, what we can see from there.
 
-And Chinese. Two semesters of it.
-Because Beijing wasn't going to speak English back to me on the metro at midnight.
+And Chinese. Two semesters of it. Because Hangzhou wasn't going to speak English back to me on the metro at midnight.
 
-These weren't just credits. They were the vocabulary I needed
-to say something meaningful about the planet.`,
+These weren't just credits. They were the vocabulary I needed to say something meaningful about the planet.`,
     milestone: "Academic foundation built"
   },
   {
@@ -364,26 +353,15 @@ Version 3 was defensible.`,
     particles: { color: "#EC4899", count: 140, speed: 0.3 },
     story: `Semester 2 ran parallel to the manuscript. Everything at once.
 
-Scientific Writing — seven lectures on how to write what I was already writing.
-Structure of a scientific paper. Journal selection. PRISMA for systematic reviews.
-Harvard and IEEE citation standards. Writing strategies for complex results.
-The irony of being taught to write while struggling to write was not lost on me.
+Scientific Writing: seven lectures on how to write what I was already writing. Structure of a scientific paper, journal selection, PRISMA for systematic reviews, Harvard and IEEE citation standards. The irony of being taught to write while struggling to write was not lost on me.
 
-AI & Large Models — a full course on the tools I was already using.
-I built the CLIMATE-XFER project here. Domain adaptation for climate data.
-It sharpened my understanding of what AI tools actually do versus what I wished they did.
+AI and Large Models: a full course on the tools I was already using. I built the CLIMATE-XFER project here, domain adaptation for climate data. It sharpened my understanding of what AI tools actually do versus what I wished they did.
 
-Intelligent Processing of Remote Sensing Images —
-SLIC superpixels, Random Forest classification, Segment Anything Model (SAM).
-The lab sessions ran directly into my SIF processing pipeline.
+Intelligent Processing of Remote Sensing Images: SLIC superpixels, Random Forest classification, Segment Anything Model (SAM). The lab sessions ran directly into my SIF processing pipeline.
 
-Team Project (HyPlant) —
-an airborne hyperspectral SIF study alongside classmates.
-Cohen's d of 1.0–6.7 across drought-stressed zones.
-A parallel SIF story that sharpened my intuitions for the main manuscript.
+Team Project (HyPlant): an airborne hyperspectral SIF study alongside classmates. Cohen's d of 1.0 to 6.7 across drought-stressed zones. A parallel SIF story that sharpened my intuitions for the main manuscript.
 
-Five courses. One manuscript in progress. Weekly supervisor meetings.
-The schedule was not comfortable. That was the point.`,
+Five courses. One manuscript in progress. Weekly supervisor meetings. The schedule was not comfortable. That was the point.`,
     milestone: "Semester 2 complete — parallel SIF work in HyPlant + Scientific Writing"
   },
   {
@@ -428,28 +406,15 @@ That is progress.`,
     particles: { color: "#22C55E", count: 190, speed: 0.4 },
     story: `The results came slowly, then all at once.
 
-The SIF signal drop during Cyclone Idai's landfall (March 2019) —
-visible at the 1° × 1° footprint scale, invisible at country level.
-That one figure anchored the whole spatial aggregation argument.
+The SIF signal drop during Cyclone Idai's landfall in March 2019 was visible at the 1 degree footprint scale and invisible at country level. That one figure anchored the entire spatial aggregation argument.
 
-Cyclone Freddy (2023) showed the longest recovery trajectory.
-14 weeks before SIF returned to pre-event baseline in the Sofala coastal zone.
-NDVI recovered in 6. The physiological lag is real and measurable.
+Cyclone Freddy (2023) showed the longest recovery trajectory. NDVI recovered in 6 weeks. The physiological lag that SIF measures is real, and it is not visible in any other index.
 
-Rainfall timing analysis (CHIRPS × cyclone calendar) showed
-that storms hitting during peak growing season cause SIF depressions
-2.3× deeper than off-season events. Same wind speed. Different biological state.
+The ecoregion analysis separated miombo woodland (fast recovery) from coastal lowland forest (slow, sometimes no recovery). Not a single response curve. A family of curves.
 
-The ecoregion analysis separated miombo woodland (fast recovery)
-from coastal lowland forest (slow, sometimes non-recovery).
-Not a single response curve — a family of curves.
+Claude Code built the processing pipeline: TROPOSIF extraction, footprint masking, CHIRPS integration, figure generation. Six Python scripts. Every figure in this paper came from that pipeline, written in Hangzhou, 10,000 km from the geography it describes.
 
-Claude Code wrote the processing pipeline: TROPOSIF extraction,
-footprint masking, CHIRPS integration, figure generation.
-Six Python scripts. Every figure in the paper came from this pipeline.
-
-The manuscript exists. It is being refined.
-It is not finished. It is being made attack-resistant.`,
+The manuscript exists. It is being refined. It is not finished. It is being made attack-resistant.`,
     milestone: "Core results confirmed — manuscript in revision phase"
   },
   {
@@ -460,32 +425,17 @@ It is not finished. It is being made attack-resistant.`,
     theme: "horizon",
     palette: { bg: "#020f1a", accent: "#F0ABFC", text: "#FAF5FF" },
     particles: { color: "#F0ABFC", count: 160, speed: 0.25 },
-    story: `July 2026.
-Target submission to the International Journal of Applied Earth Observation
-and Geoinformation.
+    story: `July 2026. Target submission to the International Journal of Applied Earth Observation and Geoinformation.
 
-The manuscript will be submitted when it is attack-resistant —
-not when it feels perfect.
+The manuscript will be submitted when it is attack-resistant, not when it feels perfect.
 
-After submission, the second manuscript begins.
-Spatial-temporal modelling of SIF recovery trajectories.
-The first paper asks: what does cyclone impact look like in SIF?
-The second asks: how long does it take to recover, and what predicts that?
+After submission, the second manuscript begins. Spatial-temporal modelling of SIF recovery trajectories. The first paper asks what cyclone impact looks like in SIF. The second asks how long recovery takes and what predicts it.
 
-Integration with Sentinel-1 SAR data is planned —
-structural damage alongside physiological signal.
-A more complete picture of what a cyclone actually does to a forest.
+Sentinel-1 SAR integration is planned: structural damage alongside physiological signal. A more complete picture of what a cyclone actually does to a forest.
 
-The final year is also about proving that one honest, rigorous,
-attack-resistant paper is worth more than three safe ones.
+I came from Mutare, Zimbabwe with a question. I am building the answer here, one revision at a time. The road is long. The signal is real. And I have learned, slowly, with help, that exposing unfinished work to criticism is not weakness. It is the method.
 
-I came from Zimbabwe with a question.
-I am building the answer here, one iteration at a time.
-
-The road is long. The signal is real.
-And I have learned — slowly, with help —
-that exposing unfinished work to criticism is not weakness.
-It is the method.`,
+I cannot be Albert Einstein. But I can be Tanaka Alex Mbendana of my generation.`,
     milestone: "July 2026 submission → Final year → Second manuscript"
   }
 ];

@@ -6,23 +6,24 @@
   <title>Tanaka Alex Mbendana — Research Roadmap</title>
   <meta name="description" content="MSc Research Journey — Solar Induced Fluorescence & Cyclone Vegetation Response, Beihang University 2025–2027" />
 
-  <!-- Fonts -->
+  <!-- Early connections — establish TCP+TLS before browser discovers resources -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://api.mapbox.com" />
+  <link rel="dns-prefetch" href="https://events.mapbox.com" />
+
+  <!-- Google Fonts — non-blocking (display=swap already set; load async, no render block) -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- ── Three.js particles (behind globe, very subtle) ── -->
-  <canvas id="bg-canvas"></canvas>
-
-  <!-- ── Globe — fixed full-screen background ── -->
+  <!-- ── Mapbox globe — fixed full-screen background ── -->
   <div id="globe-bg">
     <div id="globe-container"></div>
-    <div id="satellite-container"></div>
   </div>
 
   <!-- ── Dark tint overlay — keeps content readable over globe ── -->
@@ -97,7 +98,8 @@
   ════════════════════════════════════════════ -->
   <section id="hero" data-globe="hero">
     <div class="hero-badge">
-      <span>◆</span>
+      <img src="images/beihang-logo.png" alt="Beihang University"
+           style="height:20px;object-fit:contain;vertical-align:middle;margin-right:6px;filter:drop-shadow(0 0 3px rgba(255,255,255,0.25));">
       MSc Research Roadmap · Beihang University · 2025–2027
     </div>
 
@@ -113,7 +115,7 @@
     <div class="hero-meta">
       <span>🇿🇼 Zimbabwe</span>
       <span>🛰 Remote Sensing & GIS</span>
-      <span>📍 Beijing, China</span>
+      <span>📍 Hangzhou, China</span>
       <span>📅 2025 – 2027</span>
     </div>
 
@@ -198,7 +200,7 @@
         <div class="profile-info">
           <div class="profile-name">Tanaka Alex Mbendana</div>
           <div class="profile-title">MSc Remote Sensing & GIS</div>
-          <div class="profile-uni">Beihang University, Beijing · 2025 – 2027</div>
+          <div class="profile-uni">Beihang University, Hangzhou · 2025 – 2027</div>
           <div class="profile-tags">
             <span class="tag">SIF</span>
             <span class="tag">Tropical Cyclones</span>
@@ -229,20 +231,10 @@
           <div class="data-chips" id="data-chips"></div>
         </div>
 
-        <!-- Key findings -->
+        <!-- AI story -->
         <div class="reveal">
-          <h3 class="profile-section-title">Key Findings</h3>
-          <div class="findings-list" id="key-findings-list"></div>
-        </div>
-
-        <!-- AI tools -->
-        <div class="reveal">
-          <h3 class="profile-section-title">Powered By</h3>
-          <p style="font-size:0.85rem;color:#64748B;margin-bottom:1.5rem">
-            This research was conducted in partnership with two AI tools, each serving
-            a distinct and complementary role in the workflow.
-          </p>
-          <div class="ai-tools-grid" id="ai-tools-grid"></div>
+          <h3 class="profile-section-title">AI and the Research</h3>
+          <div id="key-findings-list"></div>
         </div>
 
       </div>
@@ -334,6 +326,124 @@
   </section>
 
   <!-- ════════════════════════════════════════════
+       5b. AI AND LARGE MODELS — COURSE TAKEAWAYS
+  ════════════════════════════════════════════ -->
+  <section id="ai-course" data-globe="hangzhou">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-label">Semester 2 · Key Course</div>
+      <h2 class="section-title">AI and Large Models</h2>
+      <p class="section-desc">
+        Ten sessions. Six assignments. One final project. What I expected, what
+        the course actually delivered, and how I am applying it to real research.
+      </p>
+
+      <!-- Three-panel takeaway grid -->
+      <div class="ai-takeaway-grid">
+
+        <div class="ai-takeaway-card reveal" data-takeaway="hoped">
+          <div class="takeaway-icon">◎</div>
+          <div class="takeaway-label">What I Hoped to Learn</div>
+          <div class="takeaway-body">
+            <p>
+              I came in expecting to learn how large language models work internally —
+              the architecture behind ChatGPT, how to build AI-powered pipelines,
+              how to automate the research process end-to-end.
+            </p>
+            <p>
+              I expected the first session to cover transformers, attention mechanisms,
+              or at minimum a neural network. Instead the professor opened with a bearing.
+              A rotating shaft. A vibration sensor. And a question: how do you find a fault
+              frequency buried in noise?
+            </p>
+          </div>
+        </div>
+
+        <div class="ai-takeaway-card reveal" data-takeaway="learned">
+          <div class="takeaway-icon">◈</div>
+          <div class="takeaway-label">What I Actually Learned</div>
+          <div class="takeaway-body">
+            <p>
+              Session 1 was signal processing: Nyquist theorem, FFT, windowing,
+              Butterworth filtering, bearing fault frequencies calculated from shaft
+              geometry. Not AI as a product — AI as applied mathematics on physical signals.
+            </p>
+            <p>
+              The course built upward from there. ML classification (Sessions 3–5).
+              Then something that shifted how I think about language models: RAG —
+              Retrieval Augmented Generation (Session 8). Not a model that knows
+              everything; a system that knows where to look. Then domain adaptation
+              and transfer learning (Session 10), leading to the final project:
+              CLIMATE_XFER — adapting a model trained on one climate regime to perform
+              accurately in another.
+            </p>
+            <p>
+              The gap between "AI as product" and "AI as engineered system"
+              is the most important thing this course delivered.
+            </p>
+          </div>
+        </div>
+
+        <div class="ai-takeaway-card reveal" data-takeaway="applying">
+          <div class="takeaway-icon">◉</div>
+          <div class="takeaway-label">How I Am Applying It</div>
+          <div class="takeaway-body">
+            <p>
+              SIF is a signal. TROPOMI measures solar-induced fluorescence as a
+              radiance value embedded in noise from atmosphere, geometry, and sensor
+              artefacts. The signal processing framework from Session 1 —
+              isolate the frequency of interest, filter the noise, validate the
+              residual — maps directly onto how I approach vegetation signal
+              extraction from satellite data.
+            </p>
+            <p>
+              RAG reframed my literature review process. Instead of reading broadly
+              and hoping to retain, I now structure queries, retrieve targeted
+              sections, and build knowledge incrementally — the way a retrieval
+              system is designed to work.
+            </p>
+            <p>
+              Domain adaptation is the core methodological challenge in my second
+              manuscript: a SIF recovery model trained on one Southern African
+              ecoregion should not be applied directly to another without transfer.
+              CLIMATE_XFER gave me the vocabulary and framework to handle that
+              rigorously.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Course progression map -->
+      <div class="ai-course-map reveal">
+        <div class="course-map-label">Course Architecture — 10 Sessions</div>
+        <div class="course-map-nodes" id="ai-course-nodes">
+          <!-- injected by main.js -->
+        </div>
+      </div>
+
+      <!-- Final project callout -->
+      <div class="ai-final-project reveal">
+        <div class="final-project-tag">Final Project</div>
+        <div class="final-project-title">CLIMATE_XFER</div>
+        <div class="final-project-desc">
+          Transfer learning for climate domain adaptation — training a model on one
+          climate regime and adapting it to perform across distinct geographic zones.
+          The same problem, at a different scale, that my second manuscript will need
+          to solve across Southern African ecoregions.
+        </div>
+        <div class="final-project-stack">
+          <span>Domain Adaptation</span>
+          <span>Transfer Learning</span>
+          <span>Climate Data</span>
+          <span>Python</span>
+          <span>MMD Loss</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
        6. RESEARCH ROADMAP TIMELINE
   ════════════════════════════════════════════ -->
   <section id="roadmap" data-globe="world">
@@ -384,7 +494,7 @@
   <footer>
     <p style="margin-bottom:0.5rem">
       <strong>Tanaka Alex Mbendana</strong> · MSc Remote Sensing & GIS ·
-      Beihang University, Beijing · 2025 – 2027
+      Beihang University, Hangzhou · 2025 – 2027
     </p>
     <p style="margin-bottom:0.5rem">
       Research: Solar Induced Fluorescence & Cyclone Vegetation Response · Southern Africa
@@ -394,18 +504,18 @@
       <strong>ChatGPT</strong> (conceptual ideation, writing feedback)
     </p>
     <p>
-      Built with Three.js · GSAP · Vanilla JS · No framework required
+      Built with Mapbox GL JS · Vanilla JS · No framework required
     </p>
   </footer>
 
-  <!-- ── Leaflet (satellite overlay) ── -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Mapbox GL JS — loaded at end of body so it executes synchronously before
+       the module script below. This guarantees window.mapboxgl is defined
+       before initGlobe() runs. The preconnect in <head> already handles the
+       early TCP+TLS so there is no latency penalty vs loading it in head. -->
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 
-  <!-- ── Globe.gl (UMD — must load before modules) ── -->
-  <script src="https://cdn.jsdelivr.net/npm/globe.gl@2/dist/globe.gl.min.js"></script>
-
-  <!-- ── Scripts ── -->
+  <!-- ── App scripts ── -->
   <script type="module" src="js/main.js"></script>
 
 </body>

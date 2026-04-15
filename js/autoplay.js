@@ -3,32 +3,35 @@
 // Journey section waypoints are hit by precise scroll positions
 // ============================================================
 
+import { setAutoplayMode, startOrbit, stopOrbit } from './globe.js';
+
 let playing   = false;
 let stopped   = false;
 let rafId     = null;
 
-// Journey waypoints: [progress 0-1, dwell ms after arriving]
+// Journey waypoints: [progress 0-1, dwell ms, orbit? (true = slow 40° sweep at street level)]
 const JOURNEY_STEPS = [
-  [0.00, 2000],  // global — Asia from space
-  [0.07, 4000],  // Hangzhou — country level
-  [0.16, 5000],  // Hangzhou — street level (satellite fades in)
-  [0.23, 1800],  // pull back over Indian Ocean
-  [0.31, 4000],  // Zimbabwe — country level
-  [0.40, 5500],  // Harare — street level (satellite fades in)
-  [0.48, 5000],  // Southern Africa — regional / cyclone belt
-  [0.62, 1800],  // pull back
-  [0.70, 4000],  // Hangzhou return — country
-  [0.80, 5000],  // Hangzhou return — street (satellite fades in)
-  [0.88, 1800],  // pull back
-  [1.00, 4000],  // World view — "What comes next?"
+  [0.00, 3500,  false], // global — Asia from space
+  [0.07, 5000,  false], // Hangzhou — country level
+  [0.16, 9000,  true],  // Hangzhou — street level: buildings rise, slow orbit
+  [0.23, 2000,  false], // pull back
+  [0.31, 5000,  false], // Zimbabwe/Mutare — country level
+  [0.40, 10000, true],  // Mutare — street level: buildings rise, slow orbit
+  [0.48, 7000,  false], // Southern Africa — cyclone belt
+  [0.55, 5000,  false], // Southern Africa — hold
+  [0.62, 2000,  false], // pull back
+  [0.70, 4500,  false], // Hangzhou return — country
+  [0.80, 8000,  true],  // Hangzhou return — street level: orbit
+  [0.88, 2000,  false], // pull back
+  [1.00, 7000,  false], // World view — "What comes next?"
 ];
 
 // Sections after journey: [selector, dwell ms]
 const POST_SECTIONS = [
-  ['#profile',   5000],
-  ['#weaknesses',6000],
-  ['#courses',   4500],
-  ['#roadmap',   6500],
+  ['#profile',   9000],   // publication + research overview + findings
+  ['#weaknesses',12000],  // 28 weaknesses — needs time to scan
+  ['#courses',   7000],
+  ['#roadmap',   10000],  // timeline — multiple entries to read
 ];
 
 // ── Init ──────────────────────────────────────────────────
@@ -45,6 +48,7 @@ async function startAutoPlay() {
   if (playing) return;
   playing = true;
   stopped = false;
+  setAutoplayMode(true);  // stop IntersectionObserver from fighting scroll camera
 
   _showStopBtn(true);
   _setProgress(0);
@@ -70,14 +74,23 @@ async function startAutoPlay() {
   const containerTop = _absTop(container);
   const containerScrollable = container.offsetHeight - window.innerHeight;
 
-  const journeyProgressPerStep = 0.45 / JOURNEY_STEPS.length; // journey = 45% of total progress
+  const journeyProgressPerStep = 0.45 / JOURNEY_STEPS.length;
   for (let i = 0; i < JOURNEY_STEPS.length; i++) {
     if (stopped) return _cleanup();
-    const [pct, dwell] = JOURNEY_STEPS[i];
+    const [pct, dwell, orbit] = JOURNEY_STEPS[i];
     const targetY = containerTop + pct * containerScrollable;
-    await _scrollTo(targetY, 2400);
+
+    // Street-level approach: scroll slower so building rise is visible
+    const scrollDuration = orbit ? 3200 : 2000;
+    await _scrollTo(targetY, scrollDuration);
+    if (stopped) return _cleanup();
+
     _setProgress(0.05 + (i + 1) * journeyProgressPerStep);
+
+    // Start slow orbit at street level so map stays alive during dwell
+    if (orbit) startOrbit(dwell - 400);
     await _wait(dwell);
+    if (orbit) stopOrbit();
   }
 
   // 5. Drive through post-journey sections
@@ -112,6 +125,7 @@ export function stopAutoPlay() {
 function _cleanup() {
   playing = false;
   stopped = false;
+  setAutoplayMode(false); // re-enable IntersectionObserver
   _showStopBtn(false);
   setTimeout(() => _setProgress(0), 800);
 }
