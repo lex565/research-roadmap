@@ -30,17 +30,17 @@ const SECTION_VIEWS = {
 const WAYPOINTS = [
   [0.00,  108.0,    20.0,    1.8,  45,   0,  -1, 'Global View'  ],
   [0.07,  120.155,  30.274,  7.0,  30,   0,   0, 'Country Level'],
-  [0.11,  120.155,  30.274, 13.0,  50,   5,   0, 'City Level'   ], // tile pre-load before rise
+  [0.11,  120.155,  30.274, 12.5,  50,   5,   0, 'City Level'   ], // tile pre-load before rise
   [0.16,  120.155,  30.274, 15.5,  62,  10,   0, 'Street Level' ],
   [0.23,   78.0,    10.0,    1.8,  35,  15,  -1, 'Global View'  ],
   [0.31,   31.5,   -18.2,    7.0,  30,   0,   1, 'Country Level'],
-  [0.35,   32.67,  -18.97,  13.0,  50,   5,   1, 'City Level'   ], // tile pre-load — Mutare
+  [0.35,   32.67,  -18.97,  12.5,  50,   5,   1, 'City Level'   ], // tile pre-load — Mutare
   [0.40,   32.67,  -18.97,  15.5,  65,  10,   1, 'Street Level' ],
   [0.48,   28.0,   -22.0,    5.0,  40,   0,   2, 'Regional View'],
   [0.55,   28.0,   -22.0,    5.0,  40,   5,   2, 'Regional View'],
   [0.62,   70.0,    5.0,     1.8,  30,  15,  -1, 'Global View'  ],
   [0.70,  120.155,  30.274,  7.0,  30,   0,   3, 'Country Level'],
-  [0.74,  120.155,  30.274, 13.0,  50,  15,   3, 'City Level'   ], // tile pre-load — return
+  [0.74,  120.155,  30.274, 12.5,  50,  15,   3, 'City Level'   ], // tile pre-load — return
   [0.80,  120.155,  30.274, 15.5,  62,  20,   3, 'Street Level' ],
   [0.88,   45.0,   15.0,     1.8,  30,  25,  -1, 'Global View'  ],
   [1.00,   15.0,    5.0,     1.5,  20,   0,   4, 'Global View'  ],
