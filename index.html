@@ -137,7 +137,125 @@
   </section>
 
   <!-- ════════════════════════════════════════════
-       2. JOURNEY MAP
+       2. AI AND LARGE MODELS — COURSE TAKEAWAYS
+  ════════════════════════════════════════════ -->
+  <section id="ai-course" data-globe="world">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-label">Semester 2 · Key Course</div>
+      <h2 class="section-title">AI and Large Models</h2>
+      <p class="section-desc">
+        Ten sessions. Six assignments. One final project. What I expected, what
+        the course actually delivered, and how I am applying it to real research.
+      </p>
+
+      <!-- Three-panel takeaway grid -->
+      <div class="ai-takeaway-grid">
+
+        <div class="ai-takeaway-card reveal" data-takeaway="hoped">
+          <div class="takeaway-icon">◎</div>
+          <div class="takeaway-label">What I Hoped to Learn</div>
+          <div class="takeaway-body">
+            <p>
+              I came in expecting to learn how large language models work internally —
+              the architecture behind ChatGPT, how to build AI-powered pipelines,
+              how to automate the research process end-to-end.
+            </p>
+            <p>
+              I expected the first session to cover transformers, attention mechanisms,
+              or at minimum a neural network. Instead the professor opened with a bearing.
+              A rotating shaft. A vibration sensor. And a question: how do you find a fault
+              frequency buried in noise?
+            </p>
+          </div>
+        </div>
+
+        <div class="ai-takeaway-card reveal" data-takeaway="learned">
+          <div class="takeaway-icon">◈</div>
+          <div class="takeaway-label">What I Actually Learned</div>
+          <div class="takeaway-body">
+            <p>
+              Session 1 was signal processing: Nyquist theorem, FFT, windowing,
+              Butterworth filtering, bearing fault frequencies calculated from shaft
+              geometry. Not AI as a product — AI as applied mathematics on physical signals.
+            </p>
+            <p>
+              The course built upward from there. ML classification (Sessions 3–5).
+              Then something that shifted how I think about language models: RAG —
+              Retrieval Augmented Generation (Session 8). Not a model that knows
+              everything; a system that knows where to look. Then domain adaptation
+              and transfer learning (Session 10), leading to the final project:
+              CLIMATE_XFER — adapting a model trained on one climate regime to perform
+              accurately in another.
+            </p>
+            <p>
+              The gap between "AI as product" and "AI as engineered system"
+              is the most important thing this course delivered.
+            </p>
+          </div>
+        </div>
+
+        <div class="ai-takeaway-card reveal" data-takeaway="applying">
+          <div class="takeaway-icon">◉</div>
+          <div class="takeaway-label">How I Am Applying It</div>
+          <div class="takeaway-body">
+            <p>
+              SIF is a signal. TROPOMI measures solar-induced fluorescence as a
+              radiance value embedded in noise from atmosphere, geometry, and sensor
+              artefacts. The signal processing framework from Session 1 —
+              isolate the frequency of interest, filter the noise, validate the
+              residual — maps directly onto how I approach vegetation signal
+              extraction from satellite data.
+            </p>
+            <p>
+              RAG reframed my literature review process. Instead of reading broadly
+              and hoping to retain, I now structure queries, retrieve targeted
+              sections, and build knowledge incrementally — the way a retrieval
+              system is designed to work.
+            </p>
+            <p>
+              Domain adaptation is the core methodological challenge in my second
+              manuscript: a SIF recovery model trained on one Southern African
+              ecoregion should not be applied directly to another without transfer.
+              CLIMATE_XFER gave me the vocabulary and framework to handle that
+              rigorously.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Course progression map -->
+      <div class="ai-course-map reveal">
+        <div class="course-map-label">Course Architecture — 10 Sessions</div>
+        <div class="course-map-nodes" id="ai-course-nodes">
+          <!-- injected by main.js -->
+        </div>
+      </div>
+
+      <!-- Final project callout -->
+      <div class="ai-final-project reveal">
+        <div class="final-project-tag">Final Project</div>
+        <div class="final-project-title">CLIMATE_XFER</div>
+        <div class="final-project-desc">
+          Transfer learning for climate domain adaptation — training a model on one
+          climate regime and adapting it to perform across distinct geographic zones.
+          The same problem, at a different scale, that my second manuscript will need
+          to solve across Southern African ecoregions.
+        </div>
+        <div class="final-project-stack">
+          <span>Domain Adaptation</span>
+          <span>Transfer Learning</span>
+          <span>Climate Data</span>
+          <span>Python</span>
+          <span>MMD Loss</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       3. JOURNEY MAP
   ════════════════════════════════════════════ -->
   <section id="journey-map" data-globe="journey">
 
@@ -322,124 +440,6 @@
         internal bar. The cure is the same as the diagnosis — expose the work earlier, let it
         be critiqued, iterate with external feedback rather than internal polish.
       </p>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════════════════
-       5b. AI AND LARGE MODELS — COURSE TAKEAWAYS
-  ════════════════════════════════════════════ -->
-  <section id="ai-course" data-globe="hangzhou">
-    <div style="max-width:1200px;margin:0 auto">
-      <div class="section-label">Semester 2 · Key Course</div>
-      <h2 class="section-title">AI and Large Models</h2>
-      <p class="section-desc">
-        Ten sessions. Six assignments. One final project. What I expected, what
-        the course actually delivered, and how I am applying it to real research.
-      </p>
-
-      <!-- Three-panel takeaway grid -->
-      <div class="ai-takeaway-grid">
-
-        <div class="ai-takeaway-card reveal" data-takeaway="hoped">
-          <div class="takeaway-icon">◎</div>
-          <div class="takeaway-label">What I Hoped to Learn</div>
-          <div class="takeaway-body">
-            <p>
-              I came in expecting to learn how large language models work internally —
-              the architecture behind ChatGPT, how to build AI-powered pipelines,
-              how to automate the research process end-to-end.
-            </p>
-            <p>
-              I expected the first session to cover transformers, attention mechanisms,
-              or at minimum a neural network. Instead the professor opened with a bearing.
-              A rotating shaft. A vibration sensor. And a question: how do you find a fault
-              frequency buried in noise?
-            </p>
-          </div>
-        </div>
-
-        <div class="ai-takeaway-card reveal" data-takeaway="learned">
-          <div class="takeaway-icon">◈</div>
-          <div class="takeaway-label">What I Actually Learned</div>
-          <div class="takeaway-body">
-            <p>
-              Session 1 was signal processing: Nyquist theorem, FFT, windowing,
-              Butterworth filtering, bearing fault frequencies calculated from shaft
-              geometry. Not AI as a product — AI as applied mathematics on physical signals.
-            </p>
-            <p>
-              The course built upward from there. ML classification (Sessions 3–5).
-              Then something that shifted how I think about language models: RAG —
-              Retrieval Augmented Generation (Session 8). Not a model that knows
-              everything; a system that knows where to look. Then domain adaptation
-              and transfer learning (Session 10), leading to the final project:
-              CLIMATE_XFER — adapting a model trained on one climate regime to perform
-              accurately in another.
-            </p>
-            <p>
-              The gap between "AI as product" and "AI as engineered system"
-              is the most important thing this course delivered.
-            </p>
-          </div>
-        </div>
-
-        <div class="ai-takeaway-card reveal" data-takeaway="applying">
-          <div class="takeaway-icon">◉</div>
-          <div class="takeaway-label">How I Am Applying It</div>
-          <div class="takeaway-body">
-            <p>
-              SIF is a signal. TROPOMI measures solar-induced fluorescence as a
-              radiance value embedded in noise from atmosphere, geometry, and sensor
-              artefacts. The signal processing framework from Session 1 —
-              isolate the frequency of interest, filter the noise, validate the
-              residual — maps directly onto how I approach vegetation signal
-              extraction from satellite data.
-            </p>
-            <p>
-              RAG reframed my literature review process. Instead of reading broadly
-              and hoping to retain, I now structure queries, retrieve targeted
-              sections, and build knowledge incrementally — the way a retrieval
-              system is designed to work.
-            </p>
-            <p>
-              Domain adaptation is the core methodological challenge in my second
-              manuscript: a SIF recovery model trained on one Southern African
-              ecoregion should not be applied directly to another without transfer.
-              CLIMATE_XFER gave me the vocabulary and framework to handle that
-              rigorously.
-            </p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Course progression map -->
-      <div class="ai-course-map reveal">
-        <div class="course-map-label">Course Architecture — 10 Sessions</div>
-        <div class="course-map-nodes" id="ai-course-nodes">
-          <!-- injected by main.js -->
-        </div>
-      </div>
-
-      <!-- Final project callout -->
-      <div class="ai-final-project reveal">
-        <div class="final-project-tag">Final Project</div>
-        <div class="final-project-title">CLIMATE_XFER</div>
-        <div class="final-project-desc">
-          Transfer learning for climate domain adaptation — training a model on one
-          climate regime and adapting it to perform across distinct geographic zones.
-          The same problem, at a different scale, that my second manuscript will need
-          to solve across Southern African ecoregions.
-        </div>
-        <div class="final-project-stack">
-          <span>Domain Adaptation</span>
-          <span>Transfer Learning</span>
-          <span>Climate Data</span>
-          <span>Python</span>
-          <span>MMD Loss</span>
-        </div>
-      </div>
-
     </div>
   </section>
 
