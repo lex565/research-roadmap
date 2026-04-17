@@ -30,15 +30,18 @@ const SECTION_VIEWS = {
 const WAYPOINTS = [
   [0.00,  108.0,    20.0,    1.8,  45,   0,  -1, 'Global View'  ],
   [0.07,  120.155,  30.274,  7.0,  30,   0,   0, 'Country Level'],
-  [0.16,  120.155,  30.274, 15.5,  62,  10,   0, 'Street Level' ], // direct dive — no hover
+  [0.11,  120.155,  30.274, 13.0,  50,   5,   0, 'City Level'   ], // tile pre-load before rise
+  [0.16,  120.155,  30.274, 15.5,  62,  10,   0, 'Street Level' ],
   [0.23,   78.0,    10.0,    1.8,  35,  15,  -1, 'Global View'  ],
   [0.31,   31.5,   -18.2,    7.0,  30,   0,   1, 'Country Level'],
-  [0.40,   32.67,  -18.97,  15.5,  65,  10,   1, 'Street Level' ], // direct dive — Mutare
+  [0.35,   32.67,  -18.97,  13.0,  50,   5,   1, 'City Level'   ], // tile pre-load — Mutare
+  [0.40,   32.67,  -18.97,  15.5,  65,  10,   1, 'Street Level' ],
   [0.48,   28.0,   -22.0,    5.0,  40,   0,   2, 'Regional View'],
   [0.55,   28.0,   -22.0,    5.0,  40,   5,   2, 'Regional View'],
   [0.62,   70.0,    5.0,     1.8,  30,  15,  -1, 'Global View'  ],
   [0.70,  120.155,  30.274,  7.0,  30,   0,   3, 'Country Level'],
-  [0.80,  120.155,  30.274, 15.5,  62,  20,   3, 'Street Level' ], // direct dive — return
+  [0.74,  120.155,  30.274, 13.0,  50,  15,   3, 'City Level'   ], // tile pre-load — return
+  [0.80,  120.155,  30.274, 15.5,  62,  20,   3, 'Street Level' ],
   [0.88,   45.0,   15.0,     1.8,  30,  25,  -1, 'Global View'  ],
   [1.00,   15.0,    5.0,     1.5,  20,   0,   4, 'Global View'  ],
 ];
@@ -205,14 +208,13 @@ function _addFog() {
 // so buildings are FULLY risen the moment the camera lands.
 // Wide start (zoom 11) = slow, visible rise during the whole dive.
 function _add3DBuildings() {
-  const RISE_START = 11;
+  const RISE_START = 13;
   const RISE_END   = 15.5;
 
   // Warm-lit building colours: emerge from near-black and brighten as they rise
   const colorExpr = [
     'interpolate', ['linear'], ['zoom'],
     RISE_START,     '#0d1520',
-    13,             '#1e3050',
     14,             '#2d4a78',
     RISE_END,       '#3d6096'
   ];
@@ -228,7 +230,7 @@ function _add3DBuildings() {
   const opacityExpr = ['interpolate', ['linear'], ['zoom'],
     RISE_START,       0,
     RISE_START + 0.8, 0.5,
-    13.5,             0.82,
+    14.5,             0.82,
     RISE_END,         0.96
   ];
 
@@ -263,7 +265,7 @@ function _add3DBuildings() {
 // setPaintProperty calls after load.
 function _addArcs() {
   ARC_DEFS.forEach((arc, i) => {
-    const coords = greatCircle(arc.from, arc.to, 72);
+    const coords = greatCircle(arc.from, arc.to, 48);
 
     // lineMetrics:true is required for line-gradient
     map.addSource(`arc-${i}`, {
