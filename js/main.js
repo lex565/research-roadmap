@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initHero();
   initAutoPlay();
-  initPDFDownload();
+  // initPDFDownload(); // Disabled temporarily — investigating animation issues
 });
 
 // ── Hero ──
