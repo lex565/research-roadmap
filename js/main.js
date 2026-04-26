@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initHero();
   initAutoPlay();
+  initPDFDownload();
 });
 
 // ── Hero ──
@@ -321,6 +322,55 @@ function buildAICourseSection() {
       <div class="course-node-detail">${s.detail}</div>
     </div>
   `).join('');
+}
+
+// ── PDF Download ──
+function initPDFDownload() {
+  const downloadBtn = document.getElementById('download-pdf-btn');
+  if (!downloadBtn) return;
+
+  downloadBtn.addEventListener('click', () => {
+    downloadBtn.disabled = true;
+    downloadBtn.textContent = '⏳ Generating PDF...';
+
+    // Clone the main content (excluding nav, controls, interactive elements)
+    const element = document.body.cloneNode(true);
+
+    // Remove interactive elements and backgrounds that don't export well
+    const toRemove = element.querySelectorAll(
+      '#journey-player, #globe-bg, #globe-overlay, #autoplay-progress-bar, #autoplay-stop-btn, #pdf-download'
+    );
+    toRemove.forEach(el => el.remove());
+
+    // Hide map backgrounds in cloned version
+    const globeBg = element.querySelector('[data-globe]');
+    if (globeBg) {
+      const clonedSections = element.querySelectorAll('[data-globe]');
+      clonedSections.forEach(s => {
+        s.style.backgroundColor = '#0F172A';
+        s.style.backgroundImage = 'none';
+      });
+    }
+
+    const opt = {
+      margin: 10,
+      filename: 'Tanaka_Mbendana_AI_System_Map.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+      jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
+      pagebreak: { avoid: '.skill-card, .growth-card, .professional-card, .ai-takeaway-card' }
+    };
+
+    window.html2pdf().set(opt).from(element).save().then(() => {
+      downloadBtn.disabled = false;
+      downloadBtn.textContent = '↓ Download PDF (Assignment Ready)';
+    }).catch(err => {
+      console.error('PDF generation failed:', err);
+      downloadBtn.disabled = false;
+      downloadBtn.textContent = '↓ Download PDF (Assignment Ready)';
+      alert('PDF generation failed. Please try again.');
+    });
+  });
 }
 
 // ── Scroll reveal ──

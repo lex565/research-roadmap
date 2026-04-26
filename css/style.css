@@ -1697,9 +1697,233 @@ footer strong { color: var(--text-primary); }
   .course-map-nodes { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* ══════════════════════════════
+   SKILLS MASTERY SECTION
+══════════════════════════════ */
+#skills-mastery {
+  padding: 8rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.skill-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.skill-card:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+  background: rgba(168, 85, 247, 0.06);
+  transform: translateY(-4px);
+}
+
+.skill-card:hover::before { opacity: 1; }
+
+.skill-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.skill-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  color: #E0E7FF;
+}
+
+.skill-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.skill-body {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: rgba(248, 250, 252, 0.85);
+}
+
+.skill-body p {
+  margin-bottom: 1rem;
+}
+
+.skill-body p:last-child { margin-bottom: 0; }
+
+.skill-body strong {
+  color: #A78BFA;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════
+   GROWTH & INSIGHTS SECTION
+══════════════════════════════ */
+#growth-insights {
+  padding: 8rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.growth-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.growth-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.4s ease;
+}
+
+.growth-card:hover {
+  border-color: rgba(59, 130, 246, 0.6);
+  background: rgba(59, 130, 246, 0.05);
+  transform: translateY(-4px);
+}
+
+.growth-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  color: #7DD3FC;
+}
+
+.growth-body {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: rgba(248, 250, 252, 0.85);
+}
+
+.growth-body p {
+  margin-bottom: 1rem;
+}
+
+.growth-body p:last-child { margin-bottom: 0; }
+
+.growth-body strong {
+  color: #7DD3FC;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════
+   PROFESSIONAL APPLICATIONS SECTION
+══════════════════════════════ */
+#professional-applications {
+  padding: 8rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.professional-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.professional-card {
+  background: rgba(34, 197, 94, 0.05);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.4s ease;
+}
+
+.professional-card:hover {
+  border-color: rgba(34, 197, 94, 0.6);
+  background: rgba(34, 197, 94, 0.1);
+  transform: translateY(-4px);
+}
+
+.prof-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.prof-sector {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  color: #86EFAC;
+}
+
+.prof-body {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: rgba(248, 250, 252, 0.85);
+}
+
+.prof-body p {
+  margin-bottom: 1rem;
+}
+
+.prof-body p:last-child { margin-bottom: 0; }
+
+.prof-body strong {
+  color: #86EFAC;
+  font-weight: 600;
+}
+
+.prof-body li {
+  margin-bottom: 0.5rem;
+}
+
+/* ══════════════════════════════
+   PDF DOWNLOAD SECTION
+══════════════════════════════ */
+#pdf-download {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+#download-pdf-btn {
+  transition: all 0.3s ease;
+}
+
+#download-pdf-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
 @media (max-width: 768px) {
   .ai-takeaway-grid { grid-template-columns: 1fr; }
   .course-map-nodes { grid-template-columns: repeat(2, 1fr); }
+  .skills-grid { grid-template-columns: 1fr; }
+  .growth-grid { grid-template-columns: 1fr; }
+  .professional-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 640px) {

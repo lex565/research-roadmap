@@ -360,6 +360,86 @@
   </section>
 
   <!-- ════════════════════════════════════════════
+       3.5. AI SKILLS MASTERY
+  ════════════════════════════════════════════ -->
+  <section id="skills-mastery" data-globe="world">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-label">Competency Framework</div>
+      <h2 class="section-title">AI Skills Mastery</h2>
+      <p class="section-desc">
+        Five core capabilities developed through the course. Depth, application, and path forward.
+      </p>
+
+      <div class="skills-grid" id="skills-grid">
+        <!-- Skill 1: Signal Processing -->
+        <div class="skill-card reveal">
+          <div class="skill-icon">⟨⟩</div>
+          <div class="skill-name">Signal Processing Fundamentals</div>
+          <div class="skill-meta">Sessions 1–2</div>
+          <div class="skill-body">
+            <p><strong>What I learned:</strong> Nyquist theorem, Fast Fourier Transform (FFT), windowing functions, Butterworth filtering, frequency-domain analysis, bearing fault detection.</p>
+            <p><strong>Why it matters:</strong> Physical systems speak in frequencies. Before machine learning comes understanding the signal in the noise.</p>
+            <p><strong>Applied to research:</strong> TROPOMI SIF is noise + signal. Isolate the fluorescence frequency, filter atmospheric/geometric artefacts, validate residual. Direct transfer from bearing diagnostics to vegetation remote sensing.</p>
+            <p><strong>Next step:</strong> Wavelet analysis for temporal variation in cyclone-driven vegetation stress responses.</p>
+          </div>
+        </div>
+
+        <!-- Skill 2: Machine Learning Classification -->
+        <div class="skill-card reveal">
+          <div class="skill-icon">◈</div>
+          <div class="skill-name">Machine Learning Classification</div>
+          <div class="skill-meta">Sessions 3–5</div>
+          <div class="skill-body">
+            <p><strong>What I learned:</strong> Supervised learning frameworks, training/validation/test splits, hyperparameter tuning, cross-validation, confusion matrices, precision/recall/F1 tradeoffs, overfitting detection.</p>
+            <p><strong>Why it matters:</strong> Raw data is useless without structure. Classification forces you to define what you're trying to detect, measure how well you detect it, and improve systematically.</p>
+            <p><strong>Applied to research:</strong> Cyclone impact classification on vegetation: severe damage vs. recovery vs. no change. Model trained on one region must validate on another without leakage.</p>
+            <p><strong>Next step:</strong> Multi-class classification for vegetation response states across ecoregions.</p>
+          </div>
+        </div>
+
+        <!-- Skill 3: RAG -->
+        <div class="skill-card reveal">
+          <div class="skill-icon">◎</div>
+          <div class="skill-name">Retrieval Augmented Generation (RAG)</div>
+          <div class="skill-meta">Session 8</div>
+          <div class="skill-body">
+            <p><strong>What I learned:</strong> Knowledge retrieval systems, embedding-based search, relevance ranking, context window optimization, prompt injection risks, generative retrieval patterns.</p>
+            <p><strong>Why it matters:</strong> LLMs hallucinate. RAG gives them a library card. Instead of "does the model know?", ask "can the system find and synthesize?".</p>
+            <p><strong>Applied to research:</strong> Literature review. Instead of broad reading and hoping to retain, structure queries → retrieve targeted sections → build knowledge incrementally. Same architecture, applied to papers.</p>
+            <p><strong>Next step:</strong> RAG over my own research datasets; query TROPOMI archives programmatically for regional SIF trends.</p>
+          </div>
+        </div>
+
+        <!-- Skill 4: Domain Adaptation & Transfer Learning -->
+        <div class="skill-card reveal">
+          <div class="skill-icon">↔</div>
+          <div class="skill-name">Domain Adaptation & Transfer Learning</div>
+          <div class="skill-meta">Session 10</div>
+          <div class="skill-body">
+            <p><strong>What I learned:</strong> Source/target domain shift, Maximum Mean Discrepancy (MMD), domain invariant representations, fine-tuning strategies, negative transfer detection, Few-Shot learning.</p>
+            <p><strong>Why it matters:</strong> Real-world models don't work across boundaries without adaptation. A model trained in one climate zone fails in another. Understanding how to bridge that gap is core to applied ML.</p>
+            <p><strong>Applied to research:</strong> SIF recovery models trained in the Zambezi basin should not be applied to the Limpopo basin without explicit transfer. CLIMATE_XFER gave me the framework and vocabulary to handle this rigorously.</p>
+            <p><strong>Next step:</strong> Implement domain adaptation for spatial generalization across Southern African ecoregions in second manuscript.</p>
+          </div>
+        </div>
+
+        <!-- Skill 5: Climate Data & Modelling -->
+        <div class="skill-card reveal">
+          <div class="skill-icon">🌍</div>
+          <div class="skill-name">Climate Data & Spatial Modelling</div>
+          <div class="skill-meta">Integrated across course</div>
+          <div class="skill-body">
+            <p><strong>What I learned:</strong> Earth observation data workflows, georeferencing, resampling/aggregation strategies, temporal interpolation, climate classification systems, open-source tools (GDAL, rasterio, xarray).</p>
+            <p><strong>Why it matters:</strong> Data quality determines model quality. Understanding aggregation scale, projection systems, temporal alignment is unglamorous but critical.</p>
+            <p><strong>Applied to research:</strong> Every analysis depends on the choices made: TROPOMI pixel size (5.5×3.5 km), temporal resolution (daily, 8-day composite), and aggregation scale (point, 25km grid, ecoregion). These choices change what signal you see.</p>
+            <p><strong>Next step:</strong> Multi-scale analysis: evaluate how cyclone impacts appear at different spatial resolutions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
        4. THE STRUGGLE — 28 WEAKNESSES
   ════════════════════════════════════════════ -->
   <section id="weaknesses" data-globe="zimbabwe">
@@ -394,6 +474,83 @@
         <div class="rule-list" id="five-rules-list">
           <!-- injected by main.js -->
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       4.5. GROWTH & INSIGHTS — LEARNING REFLECTION
+  ════════════════════════════════════════════ -->
+  <section id="growth-insights" data-globe="hangzhou">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-label">Reflective Learning</div>
+      <h2 class="section-title">How I Have Changed</h2>
+      <p class="section-desc">
+        The gap between pre-course thinking and post-course practice. What shifted.
+      </p>
+
+      <div class="growth-grid">
+        <div class="growth-card reveal">
+          <div class="growth-title">Misconception 1: AI = Black Box Magic</div>
+          <div class="growth-body">
+            <p><strong>Before:</strong> Large language models and machine learning felt like alchemy. Input data, output predictions. How did it work? Shrug.</p>
+            <p><strong>Shift:</strong> The course opened with signal processing—mathematics, not magic. Every technique has assumptions, failure modes, and measurable accuracy. The "black box" framing was just intellectual laziness.</p>
+            <p><strong>Now:</strong> I approach AI systems as engineered tools, not oracles. When a model fails, I ask: What assumptions does it make? Where do the data boundaries lie? How would I know if it's wrong?</p>
+          </div>
+        </div>
+
+        <div class="growth-card reveal">
+          <div class="growth-title">Misconception 2: RAG is Just Fancy Retrieval</div>
+          <div class="growth-body">
+            <p><strong>Before:</strong> I thought RAG was a solution looking for a problem—search results ranked by similarity scores.</p>
+            <p><strong>Shift:</strong> Session 8 reframed it: RAG is an architecture for *incremental knowledge construction*. The model doesn't pretend to know; the system finds, the model synthesizes. That's different.</p>
+            <p><strong>Now:</strong> I use RAG logic in my literature review: structure queries, retrieve targeted sections, build knowledge iteratively rather than hoping broad reading sticks. The vocabulary changed how I work.</p>
+          </div>
+        </div>
+
+        <div class="growth-card reveal">
+          <div class="growth-title">Misconception 3: Transfer Learning is Plug-and-Play</div>
+          <div class="growth-body">
+            <p><strong>Before:</strong> Transfer learning meant "train on ImageNet, fine-tune on my problem." Done.</p>
+            <p><strong>Shift:</strong> Session 10 showed domain shift is real and dangerous. A model trained on one climate regime *will* fail in another. Negative transfer is not rare—it's expected without explicit adaptation.</p>
+            <p><strong>Now:</strong> I test for domain shift explicitly. A SIF model trained in the Zambezi basin is not valid in the Limpopo basin until I prove otherwise. Spatial generalization is methodological work, not a given.</p>
+          </div>
+        </div>
+
+        <div class="growth-card reveal">
+          <div class="growth-title">Insight 1: Scale Decisions are Epistemological</div>
+          <div class="growth-body">
+            <p><strong>Discovery:</strong> The TROPOMI aggregation scale (5.5×3.5 km vs. 25 km vs. ecoregion) is not a technical detail. It's an *epistemological choice*. It changes what you can see and what you claim to know.</p>
+            <p><strong>Why it matters:</strong> This became the core novelty of my first manuscript: the first systematic evaluation of spatial aggregation scale in cyclone damage attribution. I didn't know this was missing until I understood the choice.</p>
+            <p><strong>Going forward:</strong> Every analytical choice (temporal resolution, spatial averaging, classification threshold) is a claim about what matters. I'm more explicit about stating it.</p>
+          </div>
+        </div>
+
+        <div class="growth-card reveal">
+          <div class="growth-title">Insight 2: "Attack-Resistant" Beats "Right"</div>
+          <div class="growth-body">
+            <p><strong>Discovery:</strong> Perfectionism made my work fragile. A paper optimized for being "right" breaks when criticized. One flaw and it collapses.</p>
+            <p><strong>Why it matters:</strong> The Struggle section identified this as the meta-weakness. The cure is the same as the diagnosis: expose work earlier, let it be critiqued, iterate with feedback rather than internal polish.</p>
+            <p><strong>Going forward:</strong> I'm building attack-resistant work. Smaller claims. Explicit limitations. Data openly shared. Results reproducible. Takes longer to write, more resilient to scrutiny.</p>
+          </div>
+        </div>
+
+        <div class="growth-card reveal">
+          <div class="growth-title">Insight 3: Tools Matter Less Than Questions</div>
+          <div class="growth-body">
+            <p><strong>Discovery:</strong> The course taught ML, signal processing, domain adaptation, RAG. But the bigger lesson: none of these are the point. They're just tools to answer research questions better.</p>
+            <p><strong>Why it matters:</strong> I started the MSc wanting to learn "AI techniques." I'm ending it clear that the question (How does cyclone impact vegetation? How does it vary across regions?) comes first. The tools serve the question, not vice versa.</p>
+            <p><strong>Going forward:</strong> Research design drives method choice. Not: "I learned RAG, how do I apply it?" Instead: "This question needs knowledge retrieval. RAG is one answer."</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div style="margin-top:4rem;border:1px solid rgba(168,85,247,0.3);border-radius:20px;padding:2rem;background:rgba(168,85,247,0.04)" class="reveal">
+        <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;margin-bottom:1rem">The Growth</h3>
+        <p style="font-size:0.95rem;line-height:1.8;color:rgba(248,250,252,0.85)">
+          I entered the semester as a remote sensing researcher who didn't speak the language of machine learning. I'm leaving it fluent in three: signal processing, domain-aware ML, and knowledge-augmented systems. But the real change is epistemological. I no longer see these as magical black boxes. I see them as tools with assumptions, failure modes, and measurable performance. That's a different kind of confidence — not confidence that my methods are flawless, but confidence that I can evaluate them, critique them, and improve them.
+        </p>
       </div>
     </div>
   </section>
@@ -444,6 +601,106 @@
   </section>
 
   <!-- ════════════════════════════════════════════
+       5.5. PROFESSIONAL APPLICATIONS & CAREER TRAJECTORY
+  ════════════════════════════════════════════ -->
+  <section id="professional-applications" data-globe="southern-africa">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-label">Beyond Academia</div>
+      <h2 class="section-title">Professional Applications & Career Path</h2>
+      <p class="section-desc">
+        Skills developed in this course apply beyond research publications. Three sectors,
+        immediate opportunities, and long-term career trajectory.
+      </p>
+
+      <div class="professional-grid">
+        <!-- Climate Tech -->
+        <div class="professional-card reveal">
+          <div class="prof-icon">🌱</div>
+          <div class="prof-sector">Climate Technology</div>
+          <div class="prof-body">
+            <p><strong>Immediate opportunity:</strong> Earth observation platforms building climate risk models (crop stress prediction, drought early warning, cyclone impact assessment).</p>
+            <p><strong>Relevant skills:</strong> Signal processing for satellite data, domain adaptation across regions, understanding aggregation scale effects, climate data workflows.</p>
+            <p><strong>Companies:</strong> Planet Labs, Descartes Labs, Agromonitoring, C6 Weather.</p>
+            <p><strong>Role profile:</strong> ML Engineer / Research Scientist — building models that transfer across geographies, handling covariate shift, uncertainty quantification.</p>
+            <p><strong>Next step:</strong> Portfolio project: build a regional cyclone early-warning model for SADC countries.</p>
+          </div>
+        </div>
+
+        <!-- Remote Sensing & GIS Tech -->
+        <div class="professional-card reveal">
+          <div class="prof-icon">🛰</div>
+          <div class="prof-sector">Remote Sensing & GIS</div>
+          <div class="prof-body">
+            <p><strong>Immediate opportunity:</strong> Geospatial software companies (open-source, commercial) building analysis pipelines for environmental monitoring.</p>
+            <p><strong>Relevant skills:</strong> Understanding data aggregation, georeferencing, temporal alignment, building workflows that handle covariate shift across regions, documenting assumptions clearly.</p>
+            <p><strong>Companies:</strong> Planet Labs, ESA/Copernicus, Google Earth Engine, Maxar, national mapping agencies.</p>
+            <p><strong>Role profile:</strong> Geospatial Data Scientist — designing algorithms that work across ecozones, building tools that others can use reproducibly, connecting climate science to operational systems.</p>
+            <p><strong>Next step:</strong> Contribute to open-source geospatial Python packages (rasterio, xarray, rioxarray). Build shared tools for domain adaptation in spatial analysis.</p>
+          </div>
+        </div>
+
+        <!-- Sustainability & Climate Consulting -->
+        <div class="professional-card reveal">
+          <div class="prof-icon">♻️</div>
+          <div class="prof-sector">Sustainability & Climate Consulting</div>
+          <div class="prof-body">
+            <p><strong>Immediate opportunity:</strong> Climate impact assessments for development organizations, NGOs, and government environmental agencies across Africa.</p>
+            <p><strong>Relevant skills:</strong> Translating spatial data into actionable intelligence, communicating model uncertainty, understanding regional variation (domain adaptation), rapid prototyping for different geographies.</p>
+            <p><strong>Organizations:</strong> WFP, CGIAR, African Development Bank, UNEP, national meteorological services, conservation NGOs.</p>
+            <p><strong>Role profile:</strong> Environmental Data Scientist / GIS Specialist — building evidence for policy, translating models into maps for decision-makers, ensuring methods scale across regions.</p>
+            <p><strong>Next step:</strong> Internship with a development organization; apply cyclone-vegetation models to drought preparedness in East Africa.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Career Arc -->
+      <div style="margin-top:4rem;border:1px solid rgba(59,130,246,0.3);border-radius:20px;padding:2rem;background:rgba(59,130,246,0.04)" class="reveal">
+        <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;margin-bottom:1rem">Career Arc: 2027–2032</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;font-size:0.95rem;line-height:1.8;color:rgba(248,250,252,0.85)">
+          <div>
+            <p><strong style="color:#7DD3FC">Years 1–2 (2027–2029):</strong><br>
+            Post-MSc: Industry role in climate tech or geospatial science. Deep specialization in domain adaptation and spatial generalization. Publish methodological work (2–3 papers on transfer learning in earth observation).
+            </p>
+          </div>
+          <div>
+            <p><strong style="color:#34D399">Years 3–5 (2029–2032):</strong><br>
+            Senior technical role (ML Lead, Research Scientist, or founding technical role in climate startup). Leading teams that build AI systems that actually work across real-world geographies. Mentoring early-career scientists in critical thinking about model assumptions.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skills to Develop -->
+      <div style="margin-top:2rem;border:1px solid rgba(249,115,22,0.3);border-radius:20px;padding:2rem;background:rgba(249,115,22,0.04)" class="reveal">
+        <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;margin-bottom:1rem">Skills to Develop Before 2027</h3>
+        <div class="skills-to-develop">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem">
+            <div>
+              <p style="font-weight:600;color:#FCA5A5;margin-bottom:0.5rem">Technical (6–12 months)</p>
+              <ul style="font-size:0.9rem;color:rgba(248,250,252,0.8);line-height:2">
+                <li>• Deep learning for spatial data (CNN for satellite imagery)</li>
+                <li>• Advanced MLOps (model versioning, monitoring, deployment)</li>
+                <li>• Bayesian methods (uncertainty quantification)</li>
+                <li>• Cloud platforms (GCP Earth Engine, AWS SageMaker)</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-weight:600;color:#FBBF24;margin-bottom:0.5rem">Professional (ongoing)</p>
+              <ul style="font-size:0.9rem;color:rgba(248,250,252,0.8);line-height:2">
+                <li>• Technical writing for policy makers</li>
+                <li>• Stakeholder communication (translating models to action)</li>
+                <li>• Project management (scoping, resource estimation)</li>
+                <li>• Open-source contribution & community building</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
        6. RESEARCH ROADMAP TIMELINE
   ════════════════════════════════════════════ -->
   <section id="roadmap" data-globe="world">
@@ -485,6 +742,49 @@
         </p>
       </div>
 
+      <!-- Future Research Trajectory -->
+      <div style="margin-top:4rem;border:1px solid rgba(168,85,247,0.3);border-radius:20px;padding:2rem;background:rgba(168,85,247,0.04)" class="reveal">
+        <div style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:#D8B4FE;margin-bottom:0.75rem">Beyond MSc</div>
+        <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;margin-bottom:1rem">Next Research Frontiers (PhD, Industry, Policy)</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;font-size:0.95rem;line-height:1.8;color:rgba(248,250,252,0.85)">
+          <div>
+            <p><strong style="color:#D8B4FE">Manuscript 2 (Final Year):</strong><br>
+            SIF Recovery Trajectories — temporal dynamics of vegetation re-greening post-cyclone across ecoregions. Sentinel-1 SAR + SIF integration. 2000–2024 SWIO basin.</p>
+          </div>
+          <div>
+            <p><strong style="color:#D8B4FE">PhD Direction (2027+):</strong><br>
+            Multi-scale vegetation resilience under compound disturbances (cyclone + drought). Fusion of optical (SIF) + radar (SAR) + climate data. ML for spatial generalization.</p>
+          </div>
+          <div>
+            <p><strong style="color:#D8B4FE">Policy Application:</strong><br>
+            Regional cyclone-vegetation early warning system for SADC countries. Operationalizing research into actionable climate intelligence for agricultural planning.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       PDF DOWNLOAD SECTION
+  ════════════════════════════════════════════ -->
+  <section id="pdf-download" style="padding:6rem 2rem;background:linear-gradient(135deg,rgba(88,28,135,0.15) 0%,rgba(59,130,246,0.1) 100%);border-top:1px solid rgba(168,85,247,0.2)">
+    <div style="max-width:800px;margin:0 auto;text-align:center">
+      <div style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:#D8B4FE;margin-bottom:1rem">
+        Export & Share
+      </div>
+      <h2 style="font-family:'Fraunces',serif;font-size:2rem;font-weight:300;margin-bottom:1rem">
+        Download as PDF
+      </h2>
+      <p style="font-size:1rem;color:rgba(248,250,252,0.8);margin-bottom:2rem;line-height:1.7">
+        Complete AI System Map summary — skills mastery, growth insights, professional applications, and research trajectory. Perfect for submission, portfolio, or sharing with advisors.
+      </p>
+      <button id="download-pdf-btn" style="background:linear-gradient(135deg,#A78BFA,#60A5FA);color:#FFFFFF;border:none;padding:1rem 2.5rem;font-size:1.1rem;font-weight:600;border-radius:12px;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(168,85,247,0.3);font-family:inherit" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(168,85,247,0.5)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(168,85,247,0.3)'">
+        ↓ Download PDF (Assignment Ready)
+      </button>
+      <p style="font-size:0.85rem;color:#94A3B8;margin-top:1.5rem">
+        Size: ~3.5MB · Format: A4 · Includes all sections & visualizations
+      </p>
     </div>
   </section>
 
@@ -514,6 +814,9 @@
        early TCP+TLS so there is no latency penalty vs loading it in head. -->
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" />
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+
+  <!-- PDF Generation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <!-- ── App scripts ── -->
   <script type="module" src="js/main.js"></script>
