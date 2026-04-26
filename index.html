@@ -114,26 +114,28 @@
 
     <div class="hero-meta">
       <span><svg width="24" height="16" viewBox="0 0 24 16" style="display:inline-block;margin-right:6px;vertical-align:middle;border-radius:2px">
-        <!-- Green stripe -->
-        <rect width="24" height="3.2" fill="#00A651"/>
-        <!-- Yellow stripe -->
-        <rect y="3.2" width="24" height="3.2" fill="#FFCE00"/>
-        <!-- Red stripe -->
-        <rect y="6.4" width="24" height="3.2" fill="#CE1126"/>
-        <!-- Black stripe -->
-        <rect y="9.6" width="24" height="6.4" fill="#000000"/>
-        <!-- White triangle (hoist) -->
-        <polygon points="0,0 6,0 6,16 0,16" fill="#FFFFFF"/>
-        <!-- Zimbabwe bird in gold (stylized) -->
-        <g transform="translate(3,8)">
-          <!-- Bird body -->
-          <ellipse cx="0" cy="0" rx="1.2" ry="1.5" fill="#FFB81C"/>
-          <!-- Bird head -->
-          <circle cx="0.8" cy="-1" r="0.6" fill="#FFB81C"/>
-          <!-- Bird beak -->
-          <polygon points="1.3,-1 1.8,-0.9 1.3,-0.8" fill="#FFB81C"/>
-          <!-- Wings -->
-          <path d="M -1.2,-0.5 Q -1.8,-1 -1.2,-1.5" stroke="#FFB81C" stroke-width="0.4" fill="none"/>
+        <!-- Green stripe (equal 1/4) -->
+        <rect width="24" height="4" fill="#00A651"/>
+        <!-- Yellow stripe (equal 1/4) -->
+        <rect y="4" width="24" height="4" fill="#FFCE00"/>
+        <!-- Red stripe (equal 1/4) -->
+        <rect y="8" width="24" height="4" fill="#CE1126"/>
+        <!-- Black stripe (equal 1/4) -->
+        <rect y="12" width="24" height="4" fill="#000000"/>
+        <!-- White hoist triangle -->
+        <polygon points="0,0 8,0 8,16 0,16" fill="#FFFFFF"/>
+        <!-- Red star in center of white triangle -->
+        <g transform="translate(4,4)">
+          <polygon points="2,0 2.5,1.5 4,1.5 2.75,2.5 3.25,4 2,3 0.75,4 1.25,2.5 0,1.5 1.5,1.5" fill="#CE1126"/>
+        </g>
+        <!-- Great Zimbabwe Bird (stylized soapstone bird) in gold -->
+        <g transform="translate(4,10)">
+          <!-- Bird body/main shape -->
+          <ellipse cx="0" cy="0" rx="1.5" ry="1.2" fill="#FFB81C"/>
+          <!-- Bird neck/head -->
+          <ellipse cx="1" cy="-1.2" rx="0.6" ry="0.8" fill="#FFB81C"/>
+          <!-- Bird beak/point -->
+          <polygon points="1.4,-1.8 1.8,-1.5 1.4,-1.2" fill="#FFB81C"/>
         </g>
       </svg>Zimbabwe</span>
       <span>🛰 Remote Sensing & GIS</span>
